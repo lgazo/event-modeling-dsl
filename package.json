@@ -1,0 +1,7 @@
+{
+  "name": "event-modeling-dsl",
+	"dependencies": {
+		"yo": "^5.1.0",
+		"generator-langium": "^3.3.0"
+	}
+}
