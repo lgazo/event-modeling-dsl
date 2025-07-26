@@ -1,17 +1,17 @@
 import { beforeAll, describe, expect, test } from "vitest";
 import { EmptyFileSystem, type LangiumDocument } from "langium";
-import { expandToString as s } from "langium/generate";
 import { parseHelper } from "langium/test";
 import { createEventModelingServices } from "../../src/language/event-modeling-module.js";
-import { Model, isModel } from "../../src/language/generated/ast.js";
+import { EventModeling } from "../../src/language/generated/ast.js";
+import { checkDocumentValid } from "../utils.js"; 
 
 let services: ReturnType<typeof createEventModelingServices>;
-let parse:    ReturnType<typeof parseHelper<Model>>;
-let document: LangiumDocument<Model> | undefined;
+let parse:    ReturnType<typeof parseHelper<EventModeling>>;
+let document: LangiumDocument<EventModeling> | undefined;
 
 beforeAll(async () => {
     services = createEventModelingServices(EmptyFileSystem);
-    parse = parseHelper<Model>(services.EventModeling);
+    parse = parseHelper<EventModeling>(services.EventModeling);
 
     // activate the following if your linking test requires elements from a built-in library, for example
     // await services.shared.workspace.WorkspaceManager.initializeWorkspace([]);
@@ -19,42 +19,149 @@ beforeAll(async () => {
 
 describe('Parsing tests', () => {
 
-    test('parse simple model', async () => {
-        document = await parse(`
-            person Langium
-            Hello Langium!
-        `);
+  test('should parse complex model', async () => {
+    document = await parse(`eventmodeling
+tf 01 cmd UpdateCartCommand
+tf 02 evt CartUpdatedEvent >f 01 \`jsobj\`{ a: b }
+tf 03 rmo CartItemsReadModel >f 02 [[CartItemsReadModel03]]
+tf 04 evt ProductDescriptionUpdatedEvent >f 01 \`jsobj\`{ a: { c: d } }
+tf 05 evt ProductTitleUpdatedEvent >f 01 { "a": { "c": true } }
+tf 06 evt ProductCountIncrementedEvent >f 01 \`json\`" { "a": { "c": true } } "
 
-        // check for absensce of parser errors the classic way:
-        //  deacivated, find a much more human readable way below!
-        // expect(document.parseResult.parserErrors).toHaveLength(0);
+data CartItemsReadModel03 {
+  { a: b }
+}
 
-        expect(
-            // here we use a (tagged) template expression to create a human readable representation
-            //  of the AST part we are interested in and that is to be compared to our expectation;
-            // prior to the tagged template expression we check for validity of the parsed document object
-            //  by means of the reusable function 'checkDocumentValid()' to sort out (critical) typos first;
-            checkDocumentValid(document) || s`
-                Persons:
-                  ${document.parseResult.value?.persons?.map(p => p.name)?.join('\n  ')}
-                Greetings to:
-                  ${document.parseResult.value?.greetings?.map(g => g.person.$refText)?.join('\n  ')}
-            `
-        ).toBe(s`
-            Persons:
-              Langium
-            Greetings to:
-              Langium
-        `);
-    });
+data NotAssignedData02 \`jsobj\` {
+  { a: {
+    d: true
+  }}
+}
+
+data AnotherNotAssignedData06 {
+  a: 'abc'
+}
+
+note 02 \`md\` {
+    # head 1
+    this is markdown note
+}
+
+note 05 {
+  This is whatever <b>you</b> want
+  On multiple lines
+}
+
+gwt 01
+  given
+    evt CartUpdatedEvent
+    evt CartUpdatedEvent
+  when
+    evt ProductDescriptionUpdatedEvent
+    evt ProductTitleUpdatedEvent
+  then
+    evt ProductTitleUpdatedEvent
+
+
+gwt 03
+  given
+    evt CartUpdatedEvent
+    evt ProductTitleUpdatedEvent
+  then
+    evt ProductTitleUpdatedEvent
+    evt CartUpdatedEvent
+`);
+
+
+    expect(checkDocumentValid(document)).toBeUndefined();
+
+    const { parseResult } = document;
+    // console.error('Eventmodeling', parseResult.value);
+    expect(parseResult.value.frames.length).toBe(6);
+    expect(parseResult.value.dataEntities.length).toBe(3);
+    expect(parseResult.value.noteEntities.length).toBe(2);
+    expect(parseResult.value.gwtEntities.length).toBe(2);
+  });
+
+
+  test('should parse simple model', async () => {
+    document = await parse(`eventmodeling
+tf 01 evt Start
+
+  `);
+    expect(checkDocumentValid(document)).toBeUndefined();
+
+    const { parseResult } = document;
+    // console.error('Eventmodeling', parseResult.value);
+    expect(parseResult.value.frames.length).toBe(1);
+    const frame = parseResult.value.frames[0];
+    expect(frame.name).toBe('01');
+    expect(frame.modelEntityType).toBe('evt');
+    expect(frame.entityIdentifier).toBe('Start');
+  });
+
+  test('should parse qualified names in model', async () => {
+    document = await parse(`eventmodeling
+
+tf 02 scn Screen
+tf 01 evt Product.PriceChanged
+tf 03 evt Cart.ItemAdded
+
+  `);
+    expect(checkDocumentValid(document)).toBeUndefined();
+
+    const { parseResult } = document;
+    // console.error('Eventmodeling', parseResult.value);
+    expect(parseResult.value.frames.length).toBe(3);
+    const frame = parseResult.value.frames[1];
+    expect(frame.name).toBe('01');
+    expect(frame.modelEntityType).toBe('evt');
+    expect(frame.entityIdentifier).toBe('Product.PriceChanged');
+  });
+
+  test('should parse both types of frames in model', async () => {
+    document = await parse(`eventmodeling
+
+tf 02 scn Screen
+rf 01 evt Product.PriceChanged
+tf 03 evt Cart.ItemAdded
+
+  `);
+    expect(checkDocumentValid(document)).toBeUndefined();
+
+    const { parseResult } = document;
+    // console.error('Eventmodeling', parseResult.value);
+    expect(parseResult.value.frames.length).toBe(3);
+    const frame = parseResult.value.frames[1];
+    // console.error('Eventmodeling', frame);
+    expect(frame.$type).toBe('EmResetFrame');
+    expect(frame.name).toBe('01');
+    expect(frame.modelEntityType).toBe('evt');
+    expect(frame.entityIdentifier).toBe('Product.PriceChanged');
+  });
+
+  test('should parse multiple source frames model', async () => {
+    document = await parse(`eventmodeling
+tf 01 evt Start
+tf 02 evt End
+rf 03 rmo ReadModel01 >f 01 >f 02 { a: true }
+rf 04 rmo ReadModel02 >f 01 >f 02
+  `);
+    expect(checkDocumentValid(document)).toBeUndefined();
+
+    const { parseResult } = document;
+    // console.error('Eventmodeling', parseResult.value);
+    expect(parseResult.value.frames.length).toBe(4);
+    let frame = parseResult.value.frames[2];
+    // console.error('Eventmodeling', frame);
+    expect(frame.name).toBe('03');
+    expect(frame.modelEntityType).toBe('rmo');
+    expect(frame.sourceFrames.length).toBe(2);
+
+    frame = parseResult.value.frames[3];
+    expect(frame.name).toBe('04');
+    expect(frame.modelEntityType).toBe('rmo');
+    expect(frame.sourceFrames.length).toBe(2);
+  });
 });
 
-function checkDocumentValid(document: LangiumDocument): string | undefined {
-    return document.parseResult.parserErrors.length && s`
-        Parser errors:
-          ${document.parseResult.parserErrors.map(e => e.message).join('\n  ')}
-    `
-        || document.parseResult.value === undefined && `ParseResult is 'undefined'.`
-        || !isModel(document.parseResult.value) && `Root AST object is a ${document.parseResult.value.$type}, expected a '${Model}'.`
-        || undefined;
-}
