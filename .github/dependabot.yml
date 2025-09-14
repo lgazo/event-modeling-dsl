@@ -1,0 +1,15 @@
+version: 2
+updates:
+
+  # Keep dependencies in the event-modeling subfolder up to date
+  - package-ecosystem: "npm"
+    directory: "/event-modeling"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "07:15"
+    labels:
+      - "dependencies"
+      - "event-modeling"
+    open-pull-requests-limit: 10
+    versioning-strategy: increase-if-necessary
