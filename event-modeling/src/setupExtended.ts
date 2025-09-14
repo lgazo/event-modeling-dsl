@@ -12,7 +12,7 @@ export const setupConfigExtended = (): UserConfig => {
             editorAppConfig: {
                 $type: 'extended',
                 languageId: 'event-modeling',
-                code: `// Event Modeling is running in the web!`,
+                code: `// Event Modeling is running in the web Monaco!`,
                 useDiffEditor: false,
                 extensions: [{
                     config: {
