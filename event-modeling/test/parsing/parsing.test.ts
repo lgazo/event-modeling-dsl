@@ -22,11 +22,11 @@ describe('Parsing tests', () => {
   test('should parse complex model', async () => {
     document = await parse(`eventmodeling
 tf 01 cmd UpdateCartCommand
-tf 02 evt CartUpdatedEvent >f 01 \`jsobj\`{ a: b }
-tf 03 rmo CartItemsReadModel >f 02 [[CartItemsReadModel03]]
-tf 04 evt ProductDescriptionUpdatedEvent >f 01 \`jsobj\`{ a: { c: d } }
-tf 05 evt ProductTitleUpdatedEvent >f 01 { "a": { "c": true } }
-tf 06 evt ProductCountIncrementedEvent >f 01 \`json\`" { "a": { "c": true } } "
+tf 02 evt CartUpdatedEvent ->> 01 \`jsobj\`{ a: b }
+tf 03 rmo CartItemsReadModel ->> 02 [[CartItemsReadModel03]]
+tf 04 evt ProductDescriptionUpdatedEvent ->> 01 \`jsobj\`{ a: { c: d } }
+tf 05 evt ProductTitleUpdatedEvent ->> 01 { "a": { "c": true } }
+tf 06 evt ProductCountIncrementedEvent ->> 01 \`json\`" { "a": { "c": true } } "
 
 data CartItemsReadModel03 {
   { a: b }
@@ -86,7 +86,7 @@ gwt 03
 
   test('should parse simple model', async () => {
     document = await parse(`eventmodeling
-tf 01 evt Start
+timeframe 01 event Start
 
   `);
     expect(checkDocumentValid(document)).toBeUndefined();
@@ -96,14 +96,14 @@ tf 01 evt Start
     expect(parseResult.value.frames.length).toBe(1);
     const frame = parseResult.value.frames[0];
     expect(frame.name).toBe('01');
-    expect(frame.modelEntityType).toBe('evt');
+    expect(frame.modelEntityType).toBe('event');
     expect(frame.entityIdentifier).toBe('Start');
   });
 
   test('should parse qualified names in model', async () => {
     document = await parse(`eventmodeling
 
-tf 02 scn Screen
+timeframe 02 screen Screen
 tf 01 evt Product.PriceChanged
 tf 03 evt Cart.ItemAdded
 
@@ -122,8 +122,8 @@ tf 03 evt Cart.ItemAdded
   test('should parse both types of frames in model', async () => {
     document = await parse(`eventmodeling
 
-tf 02 scn Screen
-rf 01 evt Product.PriceChanged
+tf 02 screen Screen
+resetframe 01 evt Product.PriceChanged
 tf 03 evt Cart.ItemAdded
 
   `);
@@ -144,8 +144,8 @@ tf 03 evt Cart.ItemAdded
     document = await parse(`eventmodeling
 tf 01 evt Start
 tf 02 evt End
-rf 03 rmo ReadModel01 >f 01 >f 02 { a: true }
-rf 04 rmo ReadModel02 >f 01 >f 02
+rf 03 readmodel ReadModel01 ->> 01 ->> 02 { a: true }
+rf 04 rmo ReadModel02 ->> 01 ->> 02
   `);
     expect(checkDocumentValid(document)).toBeUndefined();
 
@@ -155,7 +155,7 @@ rf 04 rmo ReadModel02 >f 01 >f 02
     let frame = parseResult.value.frames[2];
     // console.error('Eventmodeling', frame);
     expect(frame.name).toBe('03');
-    expect(frame.modelEntityType).toBe('rmo');
+    expect(frame.modelEntityType).toBe('readmodel');
     expect(frame.sourceFrames.length).toBe(2);
 
     frame = parseResult.value.frames[3];
