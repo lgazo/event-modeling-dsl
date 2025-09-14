@@ -1,6 +1,6 @@
 {
     "name": "event-modeling",
-    "description": "Please enter a brief description here",
+    "description": "Event Modeling DSL implementation.",
     "version": "0.0.1",
     "files": [
         "bin",
