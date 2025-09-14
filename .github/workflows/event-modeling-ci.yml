@@ -21,18 +21,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20.x
           cache: pnpm
           cache-dependency-path: event-modeling/pnpm-lock.yaml
-
-      - name: Enable corepack
-        run: corepack enable
-
-      - name: Prepare pnpm
-        run: corepack prepare pnpm@10.14.0 --activate
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
