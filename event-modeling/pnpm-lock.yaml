@@ -43,8 +43,8 @@ importers:
         specifier: ~1.0.2
         version: 1.0.2
       '@types/node':
-        specifier: ^18.0.0
-        version: 18.19.75
+        specifier: ^24.4.0
+        version: 24.4.0
       '@types/vscode':
         specifier: ~1.67.0
         version: 1.67.0
@@ -77,10 +77,10 @@ importers:
         version: 5.1.6
       vite:
         specifier: ~5.2.7
-        version: 5.2.14(@types/node@18.19.75)
+        version: 5.2.14(@types/node@24.4.0)
       vitest:
         specifier: ~1.4.0
-        version: 1.4.0(@types/node@18.19.75)
+        version: 1.4.0(@types/node@24.4.0)
       vscode:
         specifier: pnpm:@codingame/monaco-vscode-api@~3.2.3
         version: link:pnpm:@codingame/monaco-vscode-api@~3.2.3
@@ -583,8 +583,8 @@ packages:
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
 
-  '@types/node@18.19.75':
-    resolution: {integrity: sha512-UIksWtThob6ZVSyxcOqCLOUNg/dyO1Qvx4McgeuhrEtHTLFTf7BBhEazaE4K806FGTPtzd/2sE90qn4fVr7cyw==}
+  '@types/node@24.4.0':
+    resolution: {integrity: sha512-gUuVEAK4/u6F9wRLznPUU4WGUacSEBDPoC2TrBkw3GAnOLHBL45QdfHOXp1kJ4ypBGLxTOB+t7NJLpKoC3gznQ==}
 
   '@types/normalize-package-data@2.4.4':
     resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
@@ -2192,8 +2192,8 @@ packages:
   underscore@1.13.7:
     resolution: {integrity: sha512-GMXzWtsc57XAtguZgaQViUOzs0KTkk8ojr3/xAxXLITqf/3EMwxC0inyETfDFjH/Krbhuep0HNbbjI9i/q3F3g==}
 
-  undici-types@5.26.5:
-    resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
+  undici-types@7.11.0:
+    resolution: {integrity: sha512-kt1ZriHTi7MU+Z/r9DOdAI3ONdaR3M3csEaRc6ewa4f4dTvX4cQCbJ4NkEn0ohE4hHtq85+PhPSTY+pO/1PwgA==}
 
   undici@7.16.0:
     resolution: {integrity: sha512-QEg3HPMll0o3t2ourKwOeUAZ159Kn9mx5pnzHRQO8+Wixmh88YdZRiIwat0iNzNNXn0yoEtXJqFpyW7eM8BV7g==}
@@ -2934,9 +2934,9 @@ snapshots:
 
   '@types/json-schema@7.0.15': {}
 
-  '@types/node@18.19.75':
+  '@types/node@24.4.0':
     dependencies:
-      undici-types: 5.26.5
+      undici-types: 7.11.0
 
   '@types/normalize-package-data@2.4.4': {}
 
@@ -4725,7 +4725,7 @@ snapshots:
 
   underscore@1.13.7: {}
 
-  undici-types@5.26.5: {}
+  undici-types@7.11.0: {}
 
   undici@7.16.0: {}
 
@@ -4757,13 +4757,13 @@ snapshots:
 
   version-range@4.15.0: {}
 
-  vite-node@1.4.0(@types/node@18.19.75):
+  vite-node@1.4.0(@types/node@24.4.0):
     dependencies:
       cac: 6.7.14
       debug: 4.4.0
       pathe: 1.1.2
       picocolors: 1.1.1
-      vite: 5.2.14(@types/node@18.19.75)
+      vite: 5.2.14(@types/node@24.4.0)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -4774,16 +4774,16 @@ snapshots:
       - supports-color
       - terser
 
-  vite@5.2.14(@types/node@18.19.75):
+  vite@5.2.14(@types/node@24.4.0):
     dependencies:
       esbuild: 0.20.2
       postcss: 8.5.1
       rollup: 4.34.2
     optionalDependencies:
-      '@types/node': 18.19.75
+      '@types/node': 24.4.0
       fsevents: 2.3.3
 
-  vitest@1.4.0(@types/node@18.19.75):
+  vitest@1.4.0(@types/node@24.4.0):
     dependencies:
       '@vitest/expect': 1.4.0
       '@vitest/runner': 1.4.0
@@ -4802,11 +4802,11 @@ snapshots:
       strip-literal: 2.1.1
       tinybench: 2.9.0
       tinypool: 0.8.4
-      vite: 5.2.14(@types/node@18.19.75)
-      vite-node: 1.4.0(@types/node@18.19.75)
+      vite: 5.2.14(@types/node@24.4.0)
+      vite-node: 1.4.0(@types/node@24.4.0)
       why-is-node-running: 2.3.0
     optionalDependencies:
-      '@types/node': 18.19.75
+      '@types/node': 24.4.0
     transitivePeerDependencies:
       - less
       - lightningcss
