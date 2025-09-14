@@ -1,16 +1,6 @@
-# Development
+# Event Modeling
 
-In one terminal watch for changes in the grammar file:
+Domain Specific Language (DSL) for writing [Event Modeling](https://eventmodeling.org/) models. The DSL in textual format can be translated to various outputs, mainly to a diagram.
 
-```bash
-pnpm run langium:watch
-```
-
-In the second terminal watch for code changes reflected in Monaco web editor:
-
-```bash
-pnpm run dev
-```
-
-The editor is available at: http://192.168.100.12:5173/static/monacoExtended.html
+Event Modeling model is defined in a text with prefered `.evml` file extension.
 
