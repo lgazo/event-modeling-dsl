@@ -37,7 +37,7 @@
         "commander": "~11.0.0",
         "langium": "~3.3.0",
         "monaco-editor": "pnpm:@codingame/monaco-vscode-editor-api@~3.2.3",
-        "monaco-editor-wrapper": "~4.0.2",
+        "monaco-editor-wrapper": "~6.12.0",
         "monaco-languageclient": "~8.1.1",
         "vscode-languageclient": "~9.0.1",
         "vscode-languageserver": "~9.0.1"
