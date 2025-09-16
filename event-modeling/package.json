@@ -1,12 +1,15 @@
 {
-    "name": "event-modeling",
+    "name": "event-modeling-dsl",
     "description": "Event Modeling DSL implementation.",
     "version": "0.0.1",
     "files": [
         "bin",
         "out",
-        "src"
+        "src",
+        "static/logo.png",
+        "LICENSE"
     ],
+    "license": "Apache-2.0",
     "type": "module",
     "scripts": {
         "build": "tsc -b tsconfig.src.json && node esbuild.mjs",
@@ -25,7 +28,7 @@
         "test": "vitest run",
         "vscode:prepublish": "pnpm run esbuild-base --minify && pnpm run lint",
         "esbuild-base": "esbuild ./src/extension/main.ts --bundle --outfile=out/main.js --external:vscode --format=cjs --platform=node",
-        "vscode:package": "vsce package"
+        "vscode:package": "vsce package -o dist/"
     },
     "dependencies": {
         "@codingame/monaco-vscode-editor-service-override": "~3.2.3",
@@ -51,6 +54,7 @@
         "eslint": "~8.57.0",
         "http-server": "~14.1.1",
         "langium-cli": "~3.3.0",
+        "ovsx": "^0.10.5",
         "typescript": "~5.1.6",
         "vite": "~5.2.7",
         "vitest": "~1.4.0",
@@ -60,7 +64,26 @@
         "node": "18.19.1",
         "pnpm": "10.14.0"
     },
-    "displayName": "event-modeling",
+    "displayName": "Event Modeling DSL",
+    "publisher": "LadislavGazo",
+    "homepage": "https://github.com/lgazo/event-modeling-dsl",
+    "bugs": {
+        "url": "https://github.com/lgazo/event-modeling-dsl/issues"
+    },
+    "keywords": [
+        "dsl",
+        "eventmodeling",
+        "event modeling",
+        "langium",
+        "LSP",
+        "diagram",
+        "event sourcing"
+    ],
+    "galleryBanner": {
+        "color": "#1e1e1e",
+        "theme": "dark"
+    },
+    "icon": "static/logo.png",
     "engines": {
         "vscode": "^1.67.0",
         "node": ">=18.0.0"
