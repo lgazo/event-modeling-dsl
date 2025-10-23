@@ -1,5 +1,6 @@
 {
-	"name": "event-modeling-dsl",
+	"name": "event-modeling-belt",
+	"private": true,
 	"packageManager": "pnpm@10.14.0",
 	"dependencies": {
 		"yo": "^5.1.0",
