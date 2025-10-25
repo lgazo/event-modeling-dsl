@@ -1,0 +1,16 @@
+{
+    "projectName": "EventModeling",
+    "languages": [
+        {
+            "id": "event-modeling",
+            "grammar": "src/event-modeling.langium",
+            "fileExtensions": [
+                "evml"
+            ],
+            "textMate": {
+                "out": "syntaxes/event-modeling.tmLanguage.json"
+            }
+        }
+    ],
+    "out": "src/generated"
+}

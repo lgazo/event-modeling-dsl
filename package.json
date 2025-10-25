@@ -1,9 +1,50 @@
 {
 	"name": "event-modeling-belt",
+    "version": "0.0.1",
+    "type": "module",
 	"private": true,
 	"packageManager": "pnpm@10.14.0",
+    "scripts": {
+        "1clean": "npm run clean --workspaces",
+        "1watch": "tsc -b tsconfig.build.json --watch",
+        "1build": "tsc -b tsconfig.build.json && npm run build --workspaces",
+        "1build:clean": "npm run clean && npm run build",
+        "1langium:generate": "npm run --workspace packages/language langium:generate",
+        "1langium:watch": "npm run --workspace packages/language langium:watch",
+        "1test": "npm run --workspace packages/language test"
+    },
 	"dependencies": {
 		"yo": "^5.1.0",
 		"generator-langium": "^3.3.0"
-	}
+	},
+    "devDependencies": {
+        "@types/node": "~20.17.48",
+        "shx": "~0.4.0",
+        "typescript": "~5.8.3"
+    },
+    "volta": {
+        "node": "20.19.2",
+        "pnpm": "10.14.0"
+    },
+
+    "displayName": "Event Modeling tool belt",
+    "publisher": "LadislavGazo",
+    "homepage": "https://github.com/lgazo/event-modeling-dsl",
+    "bugs": {
+        "url": "https://github.com/lgazo/event-modeling-dsl/issues"
+    },
+    "keywords": [
+        "dsl",
+        "eventmodeling",
+        "event modeling",
+        "langium",
+        "LSP",
+        "diagram",
+        "event sourcing"
+    ],
+    "license": "Apache-2.0",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/lgazo/event-modeling-dsl.git"
+    }
 }

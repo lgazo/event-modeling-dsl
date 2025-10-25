@@ -1,0 +1,33 @@
+{
+    "name": "event-modeling-cli",
+    "description": "Event Modeling CLI",
+    "version": "0.0.1",
+    "type": "module",
+    "engines": {
+        "node": ">=20.10.0",
+        "pnpm": ">=10.14.0"
+    },
+    "files": [
+        "bin",
+        "out",
+        "src"
+    ],
+    "bin": {
+        "event-modeling-cli": "./bin/cli.js"
+    },
+    "scripts": {
+        "clean": "shx rm -fr *.tsbuildinfo out",
+        "build": "echo 'No build step'",
+        "build:clean": "pnpm run clean && pnpm run build"
+    },
+    "dependencies": {
+        "event-modeling-language": "workspace:*",
+        "chalk": "~5.3.0",
+        "commander": "~11.1.0",
+        "langium": "4.1.0"
+    },
+    "volta": {
+        "node": "20.19.2",
+        "pnpm": "10.14.0"
+    }
+}
