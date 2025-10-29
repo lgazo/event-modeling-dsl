@@ -14,7 +14,7 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "declaration": true,
-    "composite": true
+    "composite": true,
   },
   "include": [
      "**/src/**/*",
@@ -23,6 +23,7 @@
   "exclude": [
      "**/lib/**/*",
      "**/out/**/*",
+     "**/dist/**/*",
      "**/node_modules/**/*"
   ]
 }

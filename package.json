@@ -5,13 +5,13 @@
 	"private": true,
 	"packageManager": "pnpm@10.14.0",
     "scripts": {
-        "1clean": "npm run clean --workspaces",
+        "clean": "pnpm -r run clean",
         "1watch": "tsc -b tsconfig.build.json --watch",
-        "1build": "tsc -b tsconfig.build.json && npm run build --workspaces",
-        "1build:clean": "npm run clean && npm run build",
-        "1langium:generate": "npm run --workspace packages/language langium:generate",
-        "1langium:watch": "npm run --workspace packages/language langium:watch",
-        "1test": "npm run --workspace packages/language test"
+        "build": "pnpm run langium:generate && tsc -b --verbose tsconfig.build.json && pnpm -r run build",
+        "build:clean": "pnpm -r run clean && pnpm -r run build",
+        "langium:generate": "pnpm run -F event-modeling-language langium:generate",
+        "langium:watch": "pnpm run -F event-modeling-language langium:watch",
+        "test": "pnpm -r run test"
     },
 	"dependencies": {
 		"yo": "^5.1.0",

@@ -1,0 +1,83 @@
+import { log } from '../../logger.js';
+import { cleanAndMerge } from '../../utils.js';
+import { wrapLabel, calculateTextDimensions } from '../../utils.js';
+import { getConfig as commonGetConfig } from '../../config.js';
+import {
+  setAccTitle,
+  getAccTitle,
+  getAccDescription,
+  setAccDescription,
+  clear as commonClear,
+  setDiagramTitle,
+  getDiagramTitle,
+} from '../common/commonDb.js';
+
+import DEFAULT_CONFIG from '../../defaultConfig.js';
+
+import type { EventModelingDiagramConfig } from '../../config.type.js';
+
+import type {
+  EventModelingDB,
+} from './types_mermaid.js';
+
+import { create_db, Dependencies, reset_db } from './db.js';
+
+export const setOptions = function (rawOptString: string) {
+  log.debug('options str', rawOptString);
+  // rawOptString = rawOptString?.trim();
+  // rawOptString = rawOptString || '{}';
+  // try {
+  //   store.options = JSON.parse(rawOptString);
+  // } catch (e: any) {
+  //   log.error('error while parsing gitGraph options', e.message);
+  // }
+};
+
+export const getOptions = function () {
+  // return store.options;
+};
+
+export const clear = function () {
+  reset_db();
+  commonClear();
+};
+
+export const getDirection = function () {
+  // return state.records.direction;
+  return 'the direction';
+};
+
+const DEFAULT_EVENTMODELING_CONFIG: Required<EventModelingDiagramConfig> =
+  DEFAULT_CONFIG.eventmodeling;
+const getConfig = (): Required<EventModelingDiagramConfig> => {
+  const config = cleanAndMerge({
+    ...DEFAULT_EVENTMODELING_CONFIG,
+    ...commonGetConfig().eventmodeling,
+  });
+  return config;
+};
+
+const deps: Dependencies = {
+  log,
+  wrapLabel,
+  calculateTextDimensions
+}
+
+const db_base = create_db(deps);
+
+export const db: EventModelingDB = {
+  getConfig,
+
+  setOptions,
+  getOptions,
+  clear,
+
+  setAccTitle,
+  getAccTitle,
+  getAccDescription,
+  setAccDescription,
+  setDiagramTitle,
+  getDiagramTitle,
+
+  ...db_base
+};

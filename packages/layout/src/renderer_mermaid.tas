@@ -1,0 +1,42 @@
+import { select } from 'd3';
+import { getConfig, setupGraphViewbox } from '../../diagram-api/diagramAPI.js';
+import { log } from '../../logger.js';
+import type { DrawDefinition } from '../../diagram-api/types.js';
+
+import type { EventModelingDB } from './types_mermaid.js';
+import type { BaseType, Selection } from 'd3';
+
+import { draw_diagram } from './renderer.js';
+
+const DEFAULT_CONFIG = getConfig();
+const DEFAULT_EVENTMODELING_CONFIG = DEFAULT_CONFIG?.eventmodeling;
+
+export const draw: DrawDefinition = function (txt, id, ver, diagObj) {
+  log.debug('in eventmodeling renderer', txt + '\n', 'id:', id, ver);
+  if (!DEFAULT_EVENTMODELING_CONFIG) {
+    throw new Error('EventModeling config not found');
+  }
+  // const rotateCommitLabel = DEFAULT_GITGRAPH_CONFIG.rotateCommitLabel ?? false;
+  const db = diagObj.db as EventModelingDB;
+
+  const diagram: Selection<BaseType, unknown, HTMLElement, any> = select(`[id="${id}"]`);
+
+  const diagramProps = db.getDiagramProps();
+  const state = db.getState();
+
+  draw_diagram(diagramProps, state, diagram);
+
+  // utils.insertTitle(
+  //   diagram,
+  //   'gitTitleText',
+  //   DEFAULT_GITGRAPH_CONFIG.titleTopMargin ?? 0,
+  //   db.getDiagramTitle()
+  // );
+  //
+  // Setup the view box and size of the svg element
+  setupGraphViewbox(undefined, diagram, 30, undefined);
+};
+
+export default {
+  draw,
+};

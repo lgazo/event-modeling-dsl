@@ -11,7 +11,10 @@
             "path": "./packages/cli/tsconfig.json"
         },
         {
-            "path": "./packages/extension/tsconfig.json"
+            "path": "./packages/vscode-extension/tsconfig.json"
+        },
+        {
+            "path": "./packages/layout/tsconfig.json"
         }
     ]
 }

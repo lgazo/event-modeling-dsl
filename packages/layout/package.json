@@ -1,0 +1,45 @@
+{
+  "name": "event-modeling-layout",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc -b tsconfig.json",
+    "dev": "tsc -w -b tsconfig.json",
+    "clean": "shx rm -rf out",
+    "test": "vitest run"
+  },
+  "exports": {
+    ".": {
+      "types": "./out/*.d.ts",
+      "import": "./out/*.js",
+      "default": "./out/*.js"
+    }
+  },
+  "files": [
+    "out"
+  ],
+  "typesVersions": {
+    "*": {
+      ".": [
+        "out/*"
+      ]
+    }
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.14.0",
+  "dependencies": {
+    "canvas": "^3.2.0",
+    "d3": "^7.9.0",
+    "event-modeling-language": "workspace:*",
+    "jsdom": "^27.0.1",
+    "langium": "~4.1.0"
+  },
+  "devDependencies": {
+    "@types/d3": "^7.4.3",
+    "@types/jsdom": "^27.0.0",
+    "vitest": "~3.1.3"
+  }
+}

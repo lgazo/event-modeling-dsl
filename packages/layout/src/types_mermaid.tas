@@ -1,0 +1,10 @@
+import type { EventModelingDiagramConfig } from '../../config.type.js';
+import type { DiagramDBBase } from '../../diagram-api/types.js';
+
+import type { EventModel } from 'event-modeling-language';
+import type { EventModelingDatabase } from './types.js';
+
+export interface EventModelingDB extends DiagramDBBase<EventModelingDiagramConfig>, EventModelingDatabase {
+  setOptions: (rawOptString: string) => void;
+  getOptions: () => any;
+}
