@@ -17,11 +17,13 @@
     },
     "scripts": {
         "clean": "shx rm -fr *.tsbuildinfo out",
-        "build": "echo 'No build step'",
-        "build:clean": "pnpm run clean && pnpm run build"
+        "build": "tsc -b tsconfig.json",
+        "build:clean": "pnpm run clean && pnpm run build",
+        "dev": "tsc -b --watch"
     },
     "dependencies": {
         "event-modeling-language": "workspace:*",
+        "event-modeling-layout": "workspace:*",
         "chalk": "~5.3.0",
         "commander": "~11.1.0",
         "langium": "4.1.0"

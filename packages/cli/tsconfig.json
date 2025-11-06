@@ -1,16 +1,12 @@
 {
-    "extends": "../../tsconfig.json",
-    "compilerOptions": {
-        "rootDir": "src",
-        "outDir": "out",
-        "declarationDir": "out"
-    },
-    "references": [
-        {
-            "path": "../language/tsconfig.src.json"
-        }
-    ],
-    "include": [
-        "src/**/*.ts"
-    ]
+  "extends": "./tsconfig.src.json",
+  "compilerOptions": {
+    "lib": ["ES2021", "DOM"],
+    // "noEmit": true,
+    // "rootDir": "."
+  },
+  "include": [
+    "src/**/*",
+    // "test/**/*"
+  ]
 }

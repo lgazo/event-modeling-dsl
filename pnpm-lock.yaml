@@ -36,6 +36,9 @@ importers:
       event-modeling-language:
         specifier: workspace:*
         version: link:../language
+      event-modeling-layout:
+        specifier: workspace:*
+        version: link:../layout
       langium:
         specifier: 4.1.0
         version: 4.1.0
@@ -55,9 +58,9 @@ importers:
 
   packages/layout:
     dependencies:
-      canvas:
-        specifier: ^3.2.0
-        version: 3.2.0
+      '@napi-rs/canvas':
+        specifier: ^0.1.81
+        version: 0.1.81
       d3:
         specifier: ^7.9.0
         version: 7.9.0
@@ -561,6 +564,70 @@ packages:
 
   '@kwsites/promise-deferred@1.1.1':
     resolution: {integrity: sha512-GaHYm+c0O9MjZRu0ongGBRbinu8gVAMd2UZjji6jVmqKtZluZnptXGWhz1E8j8D2HJ3f/yMxKAUC0b+57wncIw==}
+
+  '@napi-rs/canvas-android-arm64@0.1.81':
+    resolution: {integrity: sha512-78Lz+AUi+MsWupyZjXwpwQrp1QCwncPvRZrdvrROcZ9Gq9grP7LfQZiGdR8LKyHIq3OR18mDP+JESGT15V1nXw==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [android]
+
+  '@napi-rs/canvas-darwin-arm64@0.1.81':
+    resolution: {integrity: sha512-omejuKgHWKDGoh8rsgsyhm/whwxMaryTQjJTd9zD7hiB9/rzcEEJLHnzXWR5ysy4/tTjHaQotE6k2t8eodTLnA==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@napi-rs/canvas-darwin-x64@0.1.81':
+    resolution: {integrity: sha512-EYfk+co6BElq5DXNH9PBLYDYwc4QsvIVbyrsVHsxVpn4p6Y3/s8MChgC69AGqj3vzZBQ1qx2CRCMtg5cub+XuQ==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [darwin]
+
+  '@napi-rs/canvas-linux-arm-gnueabihf@0.1.81':
+    resolution: {integrity: sha512-teh6Q74CyAcH31yLNQGR9MtXSFxlZa5CI6vvNUISI14gWIJWrhOwUAOly+KRe1aztWR0FWTVSPxM4p5y+06aow==}
+    engines: {node: '>= 10'}
+    cpu: [arm]
+    os: [linux]
+
+  '@napi-rs/canvas-linux-arm64-gnu@0.1.81':
+    resolution: {integrity: sha512-AGEopHFYRzJOjxY+2G1RmHPRnuWvO3Qdhq7sIazlSjxb3Z6dZHg7OB/4ZimXaimPjDACm9qWa6t5bn9bhXvkcw==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [linux]
+
+  '@napi-rs/canvas-linux-arm64-musl@0.1.81':
+    resolution: {integrity: sha512-Bj3m1cl4GIhsigkdwOxii4g4Ump3/QhNpx85IgAlCCYXpaly6mcsWpuDYEabfIGWOWhDUNBOndaQUPfWK1czOQ==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [linux]
+
+  '@napi-rs/canvas-linux-riscv64-gnu@0.1.81':
+    resolution: {integrity: sha512-yg/5NkHykVdwPlD3XObwCa/EswkOwLHswJcI9rHrac+znHsmCSj5AMX/RTU9Z9F6lZTwL60JM2Esit33XhAMiw==}
+    engines: {node: '>= 10'}
+    cpu: [riscv64]
+    os: [linux]
+
+  '@napi-rs/canvas-linux-x64-gnu@0.1.81':
+    resolution: {integrity: sha512-tPfMpSEBuV5dJSKexO/UZxpOqnYTaNbG8aKa1ek8QsWu+4SJ/foWkaxscra/RUv85vepx6WWDjzBNbNJsTnO0w==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [linux]
+
+  '@napi-rs/canvas-linux-x64-musl@0.1.81':
+    resolution: {integrity: sha512-1L0xnYgzqn8Baef+inPvY4dKqdmw3KCBoe0NEDgezuBZN7MA5xElwifoG8609uNdrMtJ9J6QZarsslLRVqri7g==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [linux]
+
+  '@napi-rs/canvas-win32-x64-msvc@0.1.81':
+    resolution: {integrity: sha512-57ryVbhm/z7RE9/UVcS7mrLPdlayLesy+9U0Uf6epCoeSGrs99tfieCcgZWFbIgmByQ1AZnNtFI2N6huqDLlWQ==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [win32]
+
+  '@napi-rs/canvas@0.1.81':
+    resolution: {integrity: sha512-ReCjd5SYI/UKx/olaQLC4GtN6wUQGjlgHXs1lvUvWGXfBMR3Fxnik3cL+OxKN5ithNdoU0/GlCrdKcQDFh2XKQ==}
+    engines: {node: '>= 10'}
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -5092,6 +5159,49 @@ snapshots:
 
   '@kwsites/promise-deferred@1.1.1': {}
 
+  '@napi-rs/canvas-android-arm64@0.1.81':
+    optional: true
+
+  '@napi-rs/canvas-darwin-arm64@0.1.81':
+    optional: true
+
+  '@napi-rs/canvas-darwin-x64@0.1.81':
+    optional: true
+
+  '@napi-rs/canvas-linux-arm-gnueabihf@0.1.81':
+    optional: true
+
+  '@napi-rs/canvas-linux-arm64-gnu@0.1.81':
+    optional: true
+
+  '@napi-rs/canvas-linux-arm64-musl@0.1.81':
+    optional: true
+
+  '@napi-rs/canvas-linux-riscv64-gnu@0.1.81':
+    optional: true
+
+  '@napi-rs/canvas-linux-x64-gnu@0.1.81':
+    optional: true
+
+  '@napi-rs/canvas-linux-x64-musl@0.1.81':
+    optional: true
+
+  '@napi-rs/canvas-win32-x64-msvc@0.1.81':
+    optional: true
+
+  '@napi-rs/canvas@0.1.81':
+    optionalDependencies:
+      '@napi-rs/canvas-android-arm64': 0.1.81
+      '@napi-rs/canvas-darwin-arm64': 0.1.81
+      '@napi-rs/canvas-darwin-x64': 0.1.81
+      '@napi-rs/canvas-linux-arm-gnueabihf': 0.1.81
+      '@napi-rs/canvas-linux-arm64-gnu': 0.1.81
+      '@napi-rs/canvas-linux-arm64-musl': 0.1.81
+      '@napi-rs/canvas-linux-riscv64-gnu': 0.1.81
+      '@napi-rs/canvas-linux-x64-gnu': 0.1.81
+      '@napi-rs/canvas-linux-x64-musl': 0.1.81
+      '@napi-rs/canvas-win32-x64-msvc': 0.1.81
+
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
       '@nodelib/fs.stat': 2.0.5
@@ -6177,6 +6287,7 @@ snapshots:
     dependencies:
       node-addon-api: 7.1.1
       prebuild-install: 7.1.3
+    optional: true
 
   capture-stack-trace@1.0.2: {}
 
@@ -6254,7 +6365,8 @@ snapshots:
       '@chevrotain/utils': 11.0.3
       lodash-es: 4.17.21
 
-  chownr@1.1.4: {}
+  chownr@1.1.4:
+    optional: true
 
   chownr@2.0.0: {}
 
@@ -6674,7 +6786,8 @@ snapshots:
 
   deprecation@2.3.1: {}
 
-  detect-libc@2.1.2: {}
+  detect-libc@2.1.2:
+    optional: true
 
   detect-node@2.1.0: {}
 
@@ -6907,7 +7020,8 @@ snapshots:
 
   exit-hook@1.1.1: {}
 
-  expand-template@2.0.3: {}
+  expand-template@2.0.3:
+    optional: true
 
   expect-type@1.2.2: {}
 
@@ -7015,7 +7129,8 @@ snapshots:
       hasown: 2.0.2
       mime-types: 2.1.35
 
-  fs-constants@1.0.0: {}
+  fs-constants@1.0.0:
+    optional: true
 
   fs-extra@11.3.2:
     dependencies:
@@ -7106,7 +7221,8 @@ snapshots:
 
   get-stream@8.0.1: {}
 
-  github-from-package@0.0.0: {}
+  github-from-package@0.0.0:
+    optional: true
 
   github-username@7.0.0(encoding@0.1.13):
     dependencies:
@@ -7987,7 +8103,8 @@ snapshots:
       minipass: 3.3.6
       yallist: 4.0.0
 
-  mkdirp-classic@0.5.3: {}
+  mkdirp-classic@0.5.3:
+    optional: true
 
   mkdirp@0.5.6:
     dependencies:
@@ -8013,7 +8130,8 @@ snapshots:
 
   nanoid@3.3.11: {}
 
-  napi-build-utils@2.0.0: {}
+  napi-build-utils@2.0.0:
+    optional: true
 
   negotiator@0.6.4: {}
 
@@ -8022,11 +8140,13 @@ snapshots:
   node-abi@3.78.0:
     dependencies:
       semver: 7.7.3
+    optional: true
 
   node-addon-api@4.3.0:
     optional: true
 
-  node-addon-api@7.1.1: {}
+  node-addon-api@7.1.1:
+    optional: true
 
   node-fetch@2.7.0(encoding@0.1.13):
     dependencies:
@@ -8481,6 +8601,7 @@ snapshots:
       simple-get: 4.0.1
       tar-fs: 2.1.4
       tunnel-agent: 0.6.0
+    optional: true
 
   prepend-http@1.0.4: {}
 
@@ -8885,13 +9006,15 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  simple-concat@1.0.1: {}
+  simple-concat@1.0.1:
+    optional: true
 
   simple-get@4.0.1:
     dependencies:
       decompress-response: 6.0.0
       once: 1.4.0
       simple-concat: 1.0.1
+    optional: true
 
   simple-git@3.28.0:
     dependencies:
@@ -9123,6 +9246,7 @@ snapshots:
       mkdirp-classic: 0.5.3
       pump: 3.0.3
       tar-stream: 2.2.0
+    optional: true
 
   tar-stream@2.2.0:
     dependencies:
@@ -9131,6 +9255,7 @@ snapshots:
       fs-constants: 1.0.0
       inherits: 2.0.4
       readable-stream: 3.6.2
+    optional: true
 
   tar@6.2.1:
     dependencies:
@@ -9233,6 +9358,7 @@ snapshots:
   tunnel-agent@0.6.0:
     dependencies:
       safe-buffer: 5.2.1
+    optional: true
 
   tunnel@0.0.6: {}
 

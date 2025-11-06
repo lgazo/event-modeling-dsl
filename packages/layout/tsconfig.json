@@ -2,11 +2,10 @@
   "extends": "./tsconfig.src.json",
   "compilerOptions": {
     "lib": ["ES2021", "DOM"],
-    "noEmit": true,
-    "rootDir": "."
+    // "noEmit": true,
+    // "rootDir": "."
   },
   "include": [
-    "src/**/*",
-    "test/**/*"
+    "src/**/*"
   ]
 }

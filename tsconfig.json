@@ -1,10 +1,10 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
+    "target": "ES2021",
     "module": "NodeNext",
     "moduleResolution": "nodenext",
     "lib": [
-        "ES2020"
+        "ES2021"
     ],
     "sourceMap": true,
     "strict": true,

@@ -2,18 +2,21 @@
   "name": "event-modeling-layout",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "type": "module",
+  "main": "./out/index.js",
+  "module": "./out/index.js",
   "scripts": {
     "build": "tsc -b tsconfig.json",
     "dev": "tsc -w -b tsconfig.json",
-    "clean": "shx rm -rf out",
-    "test": "vitest run"
+    "clean": "shx rm -rf out && shx rm tsconfig.tsbuildinfo",
+    "test": "vitest run",
+    "test:debug": "vitest --inspect --inspect-brk=127.0.0.1:9289 --no-file-parallelism"
   },
   "exports": {
     ".": {
-      "types": "./out/*.d.ts",
-      "import": "./out/*.js",
-      "default": "./out/*.js"
+      "types": "./out/index.d.ts",
+      "import": "./out/index.js",
+      "default": "./out/index.js"
     }
   },
   "files": [
@@ -31,7 +34,7 @@
   "license": "ISC",
   "packageManager": "pnpm@10.14.0",
   "dependencies": {
-    "canvas": "^3.2.0",
+    "@napi-rs/canvas": "^0.1.81",
     "d3": "^7.9.0",
     "event-modeling-language": "workspace:*",
     "jsdom": "^27.0.1",
