@@ -1,44 +1,21 @@
-import { describe, test, beforeAll } from "vitest";
+import { describe, test, beforeAll, expect } from "vitest";
 
 import { EmptyFileSystem, type LangiumDocument } from "langium";
 import { parseHelper } from "langium/test";
 import { createEventModelingServices } from "event-modeling-language";
 
 import type { EventModel } from 'event-modeling-language';
-import { create_db, Dependencies, TextDimensionConfig, TextDimensions, WrapLabelConfig } from "../src/db.js";
-import { calculate_box_dimensions } from "../src/headless.js";
-
-const log = {
-    debug: (message: string) => {
-        console.debug(message);
-    }
-}
-
-const wrapLabel = (label: string, maxWidth: number, config: WrapLabelConfig) => {
-    return label;
-}
-
-const calculateTextDimensions = (text: string, config: TextDimensionConfig) => {
-    const box = calculate_box_dimensions(text, 300, config.fontFamily, config.fontSize);
-    const result: TextDimensions = {
-        ...box,
-        lineHeight: 1
-    };
-    return result;
-}
-
-const deps: Dependencies = {
-    log,
-    wrapLabel,
-    calculateTextDimensions
-};
+import { create_db } from "../src/db.js";
+import { calculateBoxDimensions, write_svg } from "../src/headless.js";
+import { existsSync, mkdirSync, readFileSync } from "node:fs";
+import { console_log } from "../src/console_log.js";
 
 let services: ReturnType<typeof createEventModelingServices>;
-let parse:    ReturnType<typeof parseHelper<EventModel>>;
+let parse: ReturnType<typeof parseHelper<EventModel>>;
 let document: LangiumDocument<EventModel> | undefined;
 
 beforeAll(async () => {
-    console.error("BEFORE")
+    // console.error("BEFORE")
     services = createEventModelingServices(EmptyFileSystem);
     parse = parseHelper<EventModel>(services.EventModeling);
 });
@@ -46,19 +23,37 @@ beforeAll(async () => {
 describe('Layout tests', () => {
 
     test('should create svg', async () => {
-        const db = create_db(deps);
+        const db = create_db({
+            log: console_log,
+            calculateBoxDimensions
+        });
 
-        console.log('HERE')
-        const evml = `eventmodeling
-tf 01 evt Start
-tf 02 evt End
-rf 03 readmodel ReadModel01 ->> 01 ->> 02 { a: true }
-rf 04 rmo ReadModel02 ->> 01 ->> 02`;
-        document = await parse(evml);
-        console.log(`ast`, document.parseResult)
-        db.setAst(document.parseResult.value);
-        
-        const state = db.getState();
-        console.log(state);
+        const evml_names = [
+            'multiple-source-frames',
+            'translation-pattern',
+            'resetting-flow',
+            'data-block',
+            'simple-block'
+        ];
+
+        if (!existsSync('./out/test')) {
+            mkdirSync('./out/test');
+        }
+        evml_names.forEach(async (evml_name) => {
+            const evml = readFileSync(`./test/${evml_name}.evml`).toString();
+            document = await parse(evml);
+            // console.log(`ast`, document.parseResult)
+            db.setAst(document.parseResult.value);
+
+            // const state = db.getState();
+            // console.log(`state`, state);
+
+            const svg_string = write_svg({ log: console_log })(document.parseResult.value);
+
+            // const out_path = `./out/test/${evml_name}.emdsl.svg`;
+            // writeFileSync(out_path, svg_string, 'utf-8');
+            const snap = readFileSync(`./test/svg_snapshots/${evml_name}.emdsl.svg`)
+            expect(snap.toString()).equals(svg_string);
+        });
     });
 });

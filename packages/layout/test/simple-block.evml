@@ -1,0 +1,9 @@
+eventmodeling
+
+tf 02 cmd AddItem [[AddItem01]]
+
+data AddItem01 {
+  description: 'john'
+  image: 'avatar_john'
+  price: 20.4
+}

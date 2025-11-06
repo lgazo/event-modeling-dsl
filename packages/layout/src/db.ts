@@ -30,36 +30,20 @@ import {
 
 import { LoggerDep } from './types_services.js';
 
-/* FROM mermaid */
+export type CalculateBoxDimensions = (html: ContentElement[], props: { maxWidth: number }) => { width: number, height: number };
 
-export interface WrapLabelConfig {
-  fontSize: number;
-  fontFamily: string;
-  fontWeight: number;
-  joinWith: string;
-}
+export type CalculateTextProps = (
+  frame: EmFrame,
+  dataEntities: EmDataEntity[],
+  diagramProps: DiagramProps
+) => TextProps;
 
-export interface TextDimensionConfig {
-  fontSize?: number;
-  fontWeight?: number;
-  fontFamily?: string;
-}
-
-export interface TextDimensions {
-  width: number;
-  height: number;
-  lineHeight?: number;
-}
-
-/* end FROM mermaid */
-
-export type WrapLabel = (label: string, maxWidth: number, config: WrapLabelConfig) => string;
-export type CalculateTextDimensions = (text: string, config: TextDimensionConfig) => TextDimensions;
-
+export type CalculateTextPropsDep = LoggerDep & {
+  calculateBoxDimensions: CalculateBoxDimensions;
+};
 export type Dependencies = LoggerDep & {
-  wrapLabel: WrapLabel;
-  calculateTextDimensions: CalculateTextDimensions;
-}
+  calculateBoxDimensions: CalculateBoxDimensions;
+};
 
 interface EmStore {
   ast?: EventModel;
@@ -71,7 +55,138 @@ export function reset_db(): void {
   store = {};
 }
 
-export const create_db = ({ log, wrapLabel, calculateTextDimensions }: Dependencies): EventModelingDatabase => {
+function extractName(entityIdentifier: string): string | undefined {
+  const spl = entityIdentifier.split('.');
+  if (spl.length === 2) {
+    return spl[1];
+  }
+  return entityIdentifier;
+}
+
+function stripInlineValue(dataInlineValue: string): string {
+  let toHtml = dataInlineValue;
+  toHtml = toHtml.substring(toHtml.indexOf('{') + 1);
+  toHtml = toHtml.substring(0, toHtml.lastIndexOf('}') - 1);
+  return toHtml;
+}
+
+function stripBlockValue(value: string): string {
+  let toHtml = value;
+  toHtml = toHtml.substring(toHtml.indexOf('{\n') + 2);
+  toHtml = toHtml.substring(0, toHtml.lastIndexOf('}') - 1);
+  return toHtml;
+}
+
+export type ContentElement = {
+  kind: 'b' | 'br' | 'code' | 'span',
+  valueLines?: string[],
+  params?: Record<string, string | number>
+};
+
+export const ContentElementStyles = {
+  b: {
+    fontFamily: 'sans-serif',
+    fontSize: 12,
+    fontWeight: '700',
+    fontStyle: 'bold',
+  },
+  br: {
+    fontFamily: 'sans-serif',
+    fontSize: 12,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+  },
+  code: {
+    fontFamily: 'monospace',
+    fontSize: 12,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+  },
+  span: {
+    fontFamily: 'sans-serif',
+    fontSize: 12,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+  },
+}
+
+function pre(contentElement: ContentElement): string {
+  return `<pre style="text-align: left; ${contentElement.params?.maxWidth ? 'max-width: ' + contentElement.params.maxWidth + 'px' : ''}">`;
+}
+function tag(openTagName: string, closeTagName: string, contentElement: ContentElement): string[] {
+  if (!contentElement.valueLines || contentElement.valueLines.length === 0) {
+    return [];
+  }
+  if (contentElement.valueLines.length === 1) {
+    return [`${openTagName}${contentElement.valueLines[0]}${closeTagName}`];
+  }
+
+  if (contentElement.valueLines.length === 1) {
+    return [`${openTagName}${contentElement.valueLines[0]}`,
+    `${contentElement.valueLines[1]}${closeTagName}`]
+  }
+  return [`${openTagName}${contentElement.valueLines[0]}`,
+  ...contentElement.valueLines.slice(1, contentElement.valueLines.length - 1),
+  `${contentElement.valueLines[contentElement.valueLines.length - 1]}${closeTagName}`]
+}
+
+function contentElementToHtml(contentElement: ContentElement): string[] {
+  switch (contentElement.kind) {
+    case 'b':
+      return tag(`<b>`, `</b>`, contentElement);
+    case 'br':
+      return ['<br/>'];
+    case 'code':
+      return tag(pre(contentElement), `</pre>`, contentElement);
+    case 'span':
+      return tag(`<span>`, `</span>`, contentElement);
+  }
+}
+
+const calculateTextProps = ({ log, calculateBoxDimensions }: CalculateTextPropsDep): CalculateTextProps => (
+  frame: EmFrame,
+  dataEntities: EmDataEntity[],
+  diagramProps: DiagramProps
+): TextProps => {
+  const name = extractName(frame.entityIdentifier);
+
+  let semanticContent: ContentElement[] = [{ kind: 'b', valueLines: [name || "<unnamed>"] }];
+
+  if (frame.dataInlineValue) {
+
+    const strippedInlineValue = stripInlineValue(frame.dataInlineValue);
+    semanticContent.push({ kind: 'br' });
+    semanticContent.push({ kind: 'code', valueLines: [strippedInlineValue] });
+  }
+
+  if (frame.dataReference) {
+    const dataEntity = dataEntities.find(
+      (dataEntity) => dataEntity.name === frame.dataReference?.$refText
+    );
+
+    if (dataEntity) {
+      const strippedBlockValue = stripBlockValue(dataEntity.dataBlockValue);
+      const lines = strippedBlockValue.split('\n');
+      semanticContent.push({ kind: 'br' });
+      semanticContent.push({ kind: 'code', valueLines: lines, params: { maxWidth: diagramProps.textMaxWidth } });
+    }
+  }
+
+  const dimensions = calculateBoxDimensions(semanticContent, { maxWidth: 450 });
+
+  const content = semanticContent.flatMap(contentElementToHtml).join('\n');
+
+  const props = {
+    content,
+    width: dimensions.width,
+    height: dimensions.height,
+  };
+  log.debug(`[${frame.name}] ${frame.entityIdentifier} text`, props);
+  return props;
+}
+
+export const create_db = (deps: Dependencies): EventModelingDatabase => {
+  const { log, calculateBoxDimensions } = deps;
 
   function getState(): Context {
     let state = initial;
@@ -83,7 +198,7 @@ export const create_db = ({ log, wrapLabel, calculateTextDimensions }: Dependenc
     }
 
     ast.frames.forEach((frame: EmFrame, index: number) => {
-      const textProps = calculateTextProps(frame, ast.dataEntities, diagramProps);
+      const textProps = calculateTextProps({ log, calculateBoxDimensions })(frame, ast.dataEntities, diagramProps);
 
       state = dispatch(state, {
         $kind: PositionFrameKind,
@@ -173,13 +288,6 @@ export const create_db = ({ log, wrapLabel, calculateTextDimensions }: Dependenc
     return undefined;
   }
 
-  function extractName(entityIdentifier: string): string | undefined {
-    const spl = entityIdentifier.split('.');
-    if (spl.length === 2) {
-      return spl[1];
-    }
-    return entityIdentifier;
-  }
 
   function findSwimlaneByNamespace(
     swimlanes: Record<string, Swimlane>,
@@ -307,70 +415,6 @@ export const create_db = ({ log, wrapLabel, calculateTextDimensions }: Dependenc
     }
   }
 
-  function calculateTextProps(
-    frame: EmFrame,
-    dataEntities: EmDataEntity[],
-    diagramProps: DiagramProps
-  ): TextProps {
-    const name = extractName(frame.entityIdentifier);
-    let content = `<b>${name}</b>`;
-    let dataToBeRendered = false;
-    let toHtml;
-
-    if (frame.dataInlineValue) {
-      toHtml = frame.dataInlineValue;
-      toHtml = toHtml.substring(toHtml.indexOf('{') + 1);
-      toHtml = toHtml.substring(0, toHtml.lastIndexOf('}') - 1);
-      dataToBeRendered = true;
-    }
-
-    if (frame.dataReference) {
-      const dataEntity = dataEntities.find(
-        (dataEntity) => dataEntity.name === frame.dataReference?.$refText
-      );
-
-      if (dataEntity) {
-        toHtml = dataEntity.dataBlockValue;
-        toHtml = toHtml.substring(toHtml.indexOf('{\n') + 2);
-        toHtml = toHtml.substring(0, toHtml.lastIndexOf('}') - 1);
-        toHtml = toHtml.replaceAll('\n', '<br/>');
-        toHtml = toHtml.replaceAll(' ', '&nbsp;');
-        toHtml += `<br/>`;
-        dataToBeRendered = true;
-      }
-    }
-
-    if (dataToBeRendered) {
-      content += `<br/><br/><code style="text-align: left; display: block;max-width:${diagramProps.textMaxWidth}px">${toHtml}</code>`;
-    }
-
-    const wrapLabelConfig = {
-      fontSize: 16,
-      fontWeight: 700,
-      fontFamily: '"trebuchet ms", verdana, arial, sans-serif',
-      joinWith: '<br/>',
-    };
-
-    content = wrapLabel(content, diagramProps.textMaxWidth, wrapLabelConfig);
-
-    const textDimensionConfig: TextDimensionConfig = {
-      fontSize: wrapLabelConfig.fontSize,
-      fontWeight: wrapLabelConfig.fontWeight,
-      fontFamily: wrapLabelConfig.fontFamily,
-    };
-    const dimensions = calculateTextDimensions(content, textDimensionConfig);
-
-    /** this is a temporal workaround until a more complex dimension calculation is in place */
-    const calculatedWidthFix = dataToBeRendered ? dimensions.width / 3 : dimensions.width;
-
-    const props = {
-      content,
-      width: calculatedWidthFix,
-      height: dimensions.height,
-    };
-    log.debug(`[${frame.name}] ${frame.entityIdentifier} text`, props);
-    return props;
-  }
 
   function decidePositionFrame(state: Context, _command: Command): Event[] {
     const command = _command as PositionFrame;

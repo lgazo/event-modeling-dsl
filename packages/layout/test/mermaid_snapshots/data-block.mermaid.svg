@@ -1,0 +1,88 @@
+<svg aria-roledescription="eventmodeling" role="graphics-document document" viewBox="-30 -30 1438 554" height="554"
+    xmlns="http://www.w3.org/2000/svg" width="1438" id="dynamic">
+    <style>#dynamic{font-family:"trebuchet ms",verdana,arial,sans-serif;font-size:16px;fill:#333;}@keyframes edge-animation-frame{from{stroke-dashoffset:0;}}@keyframes dash{to{stroke-dashoffset:0;}}#dynamic .edge-animation-slow{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 50s linear infinite;stroke-linecap:round;}#dynamic .edge-animation-fast{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 20s linear infinite;stroke-linecap:round;}#dynamic .error-icon{fill:#552222;}#dynamic .error-text{fill:#552222;stroke:#552222;}#dynamic .edge-thickness-normal{stroke-width:1px;}#dynamic .edge-thickness-thick{stroke-width:3.5px;}#dynamic .edge-pattern-solid{stroke-dasharray:0;}#dynamic .edge-thickness-invisible{stroke-width:0;fill:none;}#dynamic .edge-pattern-dashed{stroke-dasharray:3;}#dynamic .edge-pattern-dotted{stroke-dasharray:2;}#dynamic .marker{fill:#333333;stroke:#333333;}#dynamic .marker.cross{stroke:#333333;}#dynamic svg{font-family:"trebuchet ms",verdana,arial,sans-serif;font-size:16px;}#dynamic p{margin:0;}#dynamic :root{--mermaid-font-family:"trebuchet ms",verdana,arial,sans-serif;}</style>
+    <g></g>
+    <g class="em-swimlane">
+        <rect stroke="rgb(240,240,240)" fill="rgb(250,250,250)" height="130" width="1378.0000000000002" rx="3" y="0" x="0"></rect>
+        <text y="30" x="30" font-weight="bold">UI/Automation</text>
+    </g>
+    <g class="em-swimlane">
+        <rect stroke="rgb(240,240,240)" fill="rgb(250,250,250)" height="172" width="1378.0000000000002" rx="3" y="140" x="0"></rect>
+        <text y="170" x="30" font-weight="bold">Command/Read Model</text>
+    </g>
+    <g class="em-swimlane">
+        <rect stroke="rgb(240,240,240)" fill="rgb(250,250,250)" height="172" width="1378.0000000000002" rx="3" y="322" x="0"></rect>
+        <text y="352" x="30" font-weight="bold">Events</text>
+    </g>
+    <g class="em-box">
+        <rect fill="white" stroke="#dbdada" height="100" width="187" rx="3" y="15" x="250"></rect>
+        <foreignObject height="80" width="167" y="25" x="260">
+            <div xmlns="http://www.w3.org/1999/xhtml" style="display: table; height: 100%; width: 100%;">
+                <span style="display: table-cell; text-align: center; vertical-align: middle;">
+                    <b>CartScreen</b>
+                </span>
+            </div>
+        </foreignObject>
+    </g>
+    <g class="em-box">
+        <rect fill="#bcd6fe" stroke="#679ac3" height="142" width="298.6666666666667" rx="3" y="155" x="367"></rect>
+        <foreignObject height="122" width="278.6666666666667" y="165" x="377">
+            <div xmlns="http://www.w3.org/1999/xhtml" style="display: table; height: 100%; width: 100%;">
+                <span style="display: table-cell; text-align: center; vertical-align: middle;">
+                    <b>AddItem</b>
+                    <br>
+                        <br>
+                            <code style="text-align: left; display: block;max-width:430px">&nbsp;&nbsp;description:&nbsp;'john'<br>&nbsp;&nbsp;image:&nbsp;'avatar_john'<br>&nbsp;&nbsp;price:&nbsp;20.4<br></code>
+                            </span>
+                        </div>
+                    </foreignObject>
+                </g>
+                <g class="em-box">
+                    <rect fill="#ffb778" stroke="#c19a0f" height="142" width="299.6666666666667" rx="3" y="337" x="595.6666666666667"></rect>
+                    <foreignObject height="122" width="279.6666666666667" y="347" x="605.6666666666667">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="display: table; height: 100%; width: 100%;">
+                            <span style="display: table-cell; text-align: center; vertical-align: middle;">
+                                <b>ItemAdded</b>
+                                <br>
+                                    <br>
+                                        <code style="text-align: left; display: block;max-width:430px">&nbsp;&nbsp;description:&nbsp;string<br>&nbsp;&nbsp;image:&nbsp;string<br>&nbsp;&nbsp;price:&nbsp;number<br></code>
+                                        </span>
+                                    </div>
+                                </foreignObject>
+                            </g>
+                            <g class="em-box">
+                                <rect fill="#bcd6fe" stroke="#679ac3" height="142" width="298" rx="3" y="155" x="825.3333333333335"></rect>
+                                <foreignObject height="122" width="278" y="165" x="835.3333333333335">
+                                    <div xmlns="http://www.w3.org/1999/xhtml" style="display: table; height: 100%; width: 100%;">
+                                        <span style="display: table-cell; text-align: center; vertical-align: middle;">
+                                            <b>AddItem</b>
+                                            <br>
+                                                <br>
+                                                    <code style="text-align: left; display: block;max-width:430px">&nbsp;&nbsp;description:&nbsp;'jack'<br>&nbsp;&nbsp;image:&nbsp;'avatar_jack'<br>&nbsp;&nbsp;price:&nbsp;12.5<br></code>
+                                                    </span>
+                                                </div>
+                                            </foreignObject>
+                                        </g>
+                                        <g class="em-box">
+                                            <rect fill="#ffb778" stroke="#c19a0f" height="142" width="299.6666666666667" rx="3" y="337" x="1053.3333333333335"></rect>
+                                            <foreignObject height="122" width="279.6666666666667" y="347" x="1063.3333333333335">
+                                                <div xmlns="http://www.w3.org/1999/xhtml" style="display: table; height: 100%; width: 100%;">
+                                                    <span style="display: table-cell; text-align: center; vertical-align: middle;">
+                                                        <b>ItemAdded</b>
+                                                        <br>
+                                                            <br>
+                                                                <code style="text-align: left; display: block;max-width:430px">&nbsp;&nbsp;description:&nbsp;string<br>&nbsp;&nbsp;image:&nbsp;string<br>&nbsp;&nbsp;price:&nbsp;number<br></code>
+                                                                </span>
+                                                            </div>
+                                                        </foreignObject>
+                                                    </g>
+                                                    <path d="M374.6666666666667 115 L466.55555555555554 155" marker-end="url(#arrowhead)" stroke-width="1" stroke="#000" fill="none" class="em-relation"></path>
+                                                    <path d="M566.1111111111111 297 L695.5555555555557 337" marker-end="url(#arrowhead)" stroke-width="1" stroke="#000" fill="none" class="em-relation"></path>
+                                                    <path d="M795.4444444444446 337 L924.6666666666669 297" marker-end="url(#arrowhead)" stroke-width="1" stroke="#000" fill="none" class="em-relation"></path>
+                                                    <path d="M1024.0000000000002 297 L1153.2222222222224 337" marker-end="url(#arrowhead)" stroke-width="1" stroke="#000" fill="none" class="em-relation"></path>
+                                                    <defs>
+                                                        <marker orient="auto" refY="3.5" refX="10" markerHeight="7" markerWidth="10" id="arrowhead">
+                                                            <polygon fill="#000" points="0 0, 10 3.5, 0 7"></polygon>
+                                                        </marker>
+                                                    </defs>
+                                                </svg>

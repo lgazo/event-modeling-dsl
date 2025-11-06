@@ -123,8 +123,11 @@ function renderD3Swimlane(
 
 export const draw_diagram = function (diagramProps: DiagramProps, state: Context, diagram: D3Diagram): D3Diagram {
 
+  // console.debug(`[renderer] draw swimlanes`);
   state.sortedSwimlanesArray.forEach(renderD3Swimlane(diagram, state.maxR, diagramProps));
+  // console.debug(`[renderer] draw boxes`);
   state.boxes.forEach(renderD3Box(diagram, diagramProps));
+  // console.debug(`[renderer] draw relations`);
   state.relations.forEach(renderD3Relation(diagram, diagramProps));
 
   const marker = diagram

@@ -1,6 +1,10 @@
-import { createCanvas } from 'canvas';
+import { createCanvas } from '@napi-rs/canvas';
 import * as d3 from 'd3';
 import { JSDOM } from 'jsdom';
+import { ContentElement, ContentElementStyles, create_db } from './db.js';
+import { EventModel } from 'event-modeling-language';
+import { D3Diagram, draw_diagram } from './renderer.js';
+import { LoggerDep } from './types_services.js';
 
 interface TextSegment {
     text: string;
@@ -10,41 +14,39 @@ interface TextSegment {
     fontStyle: string;
 }
 
-export function calculate_box_dimensions(
-    html: string,
-    maxWidth: number,
-    defaultFontFamily: string = 'sans-serif',
-    defaultFontSize: number = 12
-): { width: number; height: number } {
-    // Parse HTML with jsdom
-    const dom = new JSDOM(`<body><div>${html}</div></body>`);
-    const document = dom.window.document;
-
-    // Use d3 to select the div for easier manipulation (optional, but as per query)
-    const div = d3.select(document.querySelector('div') as Element);
-
-    const segments: TextSegment[] = [];
-
-    // Traverse DOM to collect styled text segments
-    function traverse(node: Node) {
-        if (node.nodeType === 3) { // Text node
-            const parent = node.parentElement;
-            if (parent) {
-                const style = dom.window.getComputedStyle(parent);
-                segments.push({
-                    text: node.textContent?.trim() || '',
-                    fontFamily: style.fontFamily || defaultFontFamily,
-                    fontSize: parseFloat(style.fontSize) || defaultFontSize,
-                    fontWeight: style.fontWeight || 'normal',
-                    fontStyle: style.fontStyle || 'normal',
-                });
-            }
-        } else if (node.nodeType === 1) {
-            node.childNodes.forEach(traverse);
-        }
+function contentElementToSegments(contentElement: ContentElement): TextSegment[] {
+    switch (contentElement.kind) {
+        case 'b':
+            return contentElement.valueLines ? contentElement.valueLines.map((value) => ({
+                text: value || '>b<',
+                ...ContentElementStyles.b
+            })) : [];
+        case 'br':
+            return [{
+                text: '>br<',
+                ...ContentElementStyles.br
+            }];
+        case 'code':
+            return contentElement.valueLines ? contentElement.valueLines.map((value) => ({
+                text: value || '>code<',
+                ...ContentElementStyles.code
+            })) : [];
+        case 'span':
+            return contentElement.valueLines ? contentElement.valueLines.map((value) => ({
+                text: value || '>span<',
+                ...ContentElementStyles.span
+            })) : [];
     }
+}
 
-    traverse(div.node()!); // Start traversal using d3 node
+const BULGARIAN_WIDTH_RATIO = 1.2;
+
+export function calculateBoxDimensions(
+    html: ContentElement[],
+    props: { maxWidth: number }
+): { width: number; height: number } {
+    const segments: TextSegment[] = html.flatMap(contentElementToSegments);
+    // console.debug(`--SEGMENTS`, segments);
 
     // Create canvas context for measurement
     const canvas = createCanvas(100, 100); // Size irrelevant for measurement
@@ -57,22 +59,18 @@ export function calculate_box_dimensions(
 
     for (const seg of segments) {
         if (!seg.text) continue;
+        currentLine = [];
+        currentWidth = 0;
         ctx.font = `${seg.fontStyle} ${seg.fontWeight} ${seg.fontSize}px ${seg.fontFamily}`;
-        const words = seg.text.split(/\s+/);
-        for (let i = 0; i < words.length; i++) {
-            const word = words[i];
-            const wordText = (i < words.length - 1) ? word + ' ' : word;
-            const metrics = ctx.measureText(wordText);
-            if (currentWidth + metrics.width > maxWidth && currentLine.length > 0) {
-                lines.push(currentLine);
-                currentLine = [];
-                currentWidth = 0;
-            }
-            currentLine.push({ ...seg, text: wordText });
-            currentWidth += metrics.width;
-        }
+        // const words = seg.text.split(/\s+/);
+        const word = seg.text;
+        const wordText = word;
+        const metrics = ctx.measureText(wordText);
+        currentLine.push({ ...seg, text: wordText });
+        currentWidth += metrics.width;
+        // console.debug(`[word]`, { metrics, currentWidth, wordText });
+        lines.push(currentLine);
     }
-    if (currentLine.length > 0) lines.push(currentLine);
 
     // Calculate dimensions
     let height = 0;
@@ -83,17 +81,58 @@ export function calculate_box_dimensions(
         for (const seg of line) {
             ctx.font = `${seg.fontStyle} ${seg.fontWeight} ${seg.fontSize}px ${seg.fontFamily}`;
             const metrics = ctx.measureText(seg.text);
-            lineWidth += metrics.width;
+            lineWidth += metrics.width * BULGARIAN_WIDTH_RATIO;
             // Use modern metrics for accurate height (fall back to fontSize * 1.2 if not supported)
             const segHeight = ('actualBoundingBoxAscent' in metrics && 'actualBoundingBoxDescent' in metrics)
                 ? metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent
                 : seg.fontSize * 1.2;
             lineHeight = Math.max(lineHeight, segHeight);
+            // console.log(`--METRICS`, { ...metrics, segHeight, lineHeight });
         }
         height += lineHeight + 2; // Add line spacing (adjust as needed)
         boxWidth = Math.max(boxWidth, lineWidth);
     }
 
     // Box width is the max line width, capped at maxWidth
-    return { width: Math.min(boxWidth, maxWidth), height };
+    const result = { width: Math.min(boxWidth, props.maxWidth), height };
+    // console.debug(`[headless] calculate result`, result);
+    return result;
+}
+
+export const write_svg = (deps: LoggerDep) => (
+    model: EventModel,
+): string => {
+
+    const db = create_db({
+        ...deps,
+        calculateBoxDimensions
+    });
+    db.setAst(model);
+
+    const state = db.getState();
+    const diagramProps = db.getDiagramProps();
+
+    const dom = new JSDOM(`<svg xmlns="http://www.w3.org/2000/svg" id="dynamic">
+        <style>#dynamic{font-family:${ContentElementStyles.span.fontFamily};font-size:${ContentElementStyles.span.fontSize}px;fill:#333;}@keyframes edge-animation-frame{from{stroke-dashoffset:0;}}@keyframes dash{to{stroke-dashoffset:0;}}#dynamic .edge-animation-slow{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 50s linear infinite;stroke-linecap:round;}#dynamic .edge-animation-fast{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 20s linear infinite;stroke-linecap:round;}#dynamic .error-icon{fill:#552222;}#dynamic .error-text{fill:#552222;stroke:#552222;}#dynamic .edge-thickness-normal{stroke-width:1px;}#dynamic .edge-thickness-thick{stroke-width:3.5px;}#dynamic .edge-pattern-solid{stroke-dasharray:0;}#dynamic .edge-thickness-invisible{stroke-width:0;fill:none;}#dynamic .edge-pattern-dashed{stroke-dasharray:3;}#dynamic .edge-pattern-dotted{stroke-dasharray:2;}#dynamic .marker{fill:#333333;stroke:#333333;}#dynamic .marker.cross{stroke:#333333;}#dynamic svg{font-family:${ContentElementStyles.span.fontFamily};font-size:${ContentElementStyles.span.fontSize}px;}#dynamic p{margin:0;}#dynamic :root{--mermaid-font-family:${ContentElementStyles.span.fontFamily};}</style>
+        </svg>`, { contentType: 'image/svg+xml' });
+    const document = dom.window.document;
+    const svgElement = d3.select(document.querySelector('svg') as Element);
+
+    const diagram = svgElement as unknown as D3Diagram;
+    draw_diagram(diagramProps, state, diagram);
+
+    const minWidth = diagramProps.contentStartX + diagramProps.boxMinWidth + 3 * diagramProps.boxPadding;
+    const width = Math.max(state.maxR, minWidth);
+    const swimlanes = state.sortedSwimlanesArray;
+    const height = swimlanes.length > 0
+        ? swimlanes[swimlanes.length - 1].y + swimlanes[swimlanes.length - 1].height
+        : diagramProps.swimlaneMinHeight + 2 * diagramProps.swimlanePadding;
+
+    diagram
+        .attr('width', width)
+        .attr('height', height)
+        .attr('viewBox', `0 0 ${width} ${height}`);
+
+    const svg_string = dom.serialize();
+    return svg_string;
 }

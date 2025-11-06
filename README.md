@@ -19,6 +19,17 @@ For [VS Codium](https://vscodium.com/) use [Open VSX Registry](https://open-vsx.
 
 Event Modeling model file is defined in a text with prefered `.evml` file extension.
 
+## CLI
+
+The command line interface can generate SVG file out of `.evml` text definition.
+
+Just call the CLI script like this:
+
+```bash
+./packages/cli/bin/cli.js svg ./packages/layout/test/multiple-source-frames.evml
+```
+
+
 ## Technical details
 
 The project uses [Langium](https://langium.org/), open-source tool to create DSL with Node.js and TypeScript.
@@ -33,9 +44,9 @@ The root project purpose is to install local tooling required by Langium, mainly
 ## Features
 
 - [x] Domain Specific Language parser
+- [x] Extract rendering to SVG ([available only in Mermaid fork](https://github.com/lgazo/mermaid/tree/feature/event-modeling-diagram))
 - [ ] Expand DSL - Given-When-Then, Diagram configuration, Swimlane labels, Slices,...
 - [ ] Completness check Langium Validator
-- [ ] Extract rendering to SVG ([available only in Mermaid fork](https://github.com/lgazo/mermaid/tree/feature/event-modeling-diagram))
 - [ ] Additional output to Draw.io XML
 - [ ] VS Code Extension command support for different outputs
 

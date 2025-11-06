@@ -1,15 +1,20 @@
 import { describe, test, expect } from "vitest";
 
-import { calculate_box_dimensions } from "../src/headless";
+import { ContentElement } from "../src/db.js";
+import { calculateBoxDimensions } from "../src/headless.js";
 
 describe('Headless tests', () => {
 
     test('should compute containing box', async () => {
-        const html = '<p>Hello <b>world</b>! This is <i>rich</i> text spanning multiple lines if long enough.</p>';
+        const strippedBlockValue = `  description: 'john'\n  image: 'avatar_john'\n  price: 20.4`;
+        const lines = strippedBlockValue.split('\n');
+        let semanticContent: ContentElement[] = [{ kind: 'b', valueLines: ["AddItem"] }];
+        semanticContent.push({ kind: 'br' });
+        semanticContent.push({ kind: 'code', valueLines: lines, params: { maxWidth: 430 } });
         const maxWidth = 300;
-        const dimensions = calculate_box_dimensions(html, maxWidth);
-        console.log(dimensions); // e.g., { width: 250, height: 40 }
-        expect(dimensions.width).eq(300);
-        expect(dimensions.height).eq(40);
+        const dimensions = calculateBoxDimensions(semanticContent, { maxWidth });
+        // console.log(dimensions);
+        expect(dimensions.width).eq(156.5280029296875);
+        expect(dimensions.height).eq(69);
     });
 });
