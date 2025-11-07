@@ -1,0 +1,15 @@
+.evml-diagram {
+  display: block;
+  overflow-x: auto;
+}
+
+.evml-diagram svg {
+  width: 100%;
+  height: auto;
+  font-family: sans-serif;
+  color: #333;
+}
+
+.evml-diagram pre {
+  margin: 0;
+}

@@ -17,6 +17,11 @@
       "types": "./out/index.d.ts",
       "import": "./out/index.js",
       "default": "./out/index.js"
+    },
+    "./browser": {
+      "types": "./out/browser.d.ts",
+      "import": "./out/browser.js",
+      "default": "./out/browser.js"
     }
   },
   "files": [
@@ -26,6 +31,9 @@
     "*": {
       ".": [
         "out/*"
+      ],
+      "browser": [
+        "out/browser"
       ]
     }
   },

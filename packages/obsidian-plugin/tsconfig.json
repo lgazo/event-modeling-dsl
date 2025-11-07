@@ -1,0 +1,49 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "out",
+    "composite": true,
+    "noEmit": true,
+    "module": "esnext",
+    "lib": [
+      "ES2021",
+      "DOM"
+    ],
+    "baseUrl": ".",
+    "moduleResolution": "bundler",
+    "paths": {
+      "obsidian": [
+        "./src/obsidian-shim.d.ts"
+      ],
+      "event-modeling-language": [
+        "../language/out/index.js",
+        "../language/out/index.d.ts"
+      ],
+      "event-modeling-layout": [
+        "../layout/out/index.js",
+        "../layout/out/index.d.ts"
+      ],
+      "event-modeling-layout/browser": [
+        "../layout/out/browser.js",
+        "../layout/out/browser.d.ts"
+      ],
+      "event-modeling-layout/out/*": [
+        "../layout/out/*.js",
+        "../layout/out/*.d.ts"
+      ],
+      "langium": [
+        "../layout/node_modules/langium/lib/index.js",
+        "../layout/node_modules/langium/lib/index.d.ts"
+      ],
+      "d3": [
+        "../layout/node_modules/d3/index.js",
+        "../layout/node_modules/d3/index.d.ts"
+      ]
+    }
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.d.ts"
+  ]
+}

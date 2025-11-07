@@ -5,98 +5,15 @@ import { ContentElement, ContentElementStyles, create_db } from './db.js';
 import { EventModel } from 'event-modeling-language';
 import { D3Diagram, draw_diagram } from './renderer.js';
 import { LoggerDep } from './types_services.js';
-
-interface TextSegment {
-    text: string;
-    fontFamily: string;
-    fontSize: number;
-    fontWeight: string;
-    fontStyle: string;
-}
-
-function contentElementToSegments(contentElement: ContentElement): TextSegment[] {
-    switch (contentElement.kind) {
-        case 'b':
-            return contentElement.valueLines ? contentElement.valueLines.map((value) => ({
-                text: value || '>b<',
-                ...ContentElementStyles.b
-            })) : [];
-        case 'br':
-            return [{
-                text: '>br<',
-                ...ContentElementStyles.br
-            }];
-        case 'code':
-            return contentElement.valueLines ? contentElement.valueLines.map((value) => ({
-                text: value || '>code<',
-                ...ContentElementStyles.code
-            })) : [];
-        case 'span':
-            return contentElement.valueLines ? contentElement.valueLines.map((value) => ({
-                text: value || '>span<',
-                ...ContentElementStyles.span
-            })) : [];
-    }
-}
-
-const BULGARIAN_WIDTH_RATIO = 1.2;
+import { measureContentElements } from './text_measure.js';
 
 export function calculateBoxDimensions(
     html: ContentElement[],
     props: { maxWidth: number }
 ): { width: number; height: number } {
-    const segments: TextSegment[] = html.flatMap(contentElementToSegments);
-    // console.debug(`--SEGMENTS`, segments);
-
-    // Create canvas context for measurement
     const canvas = createCanvas(100, 100); // Size irrelevant for measurement
     const ctx = canvas.getContext('2d')!;
-
-    // Layout: wrap into lines
-    const lines: TextSegment[][] = [];
-    let currentLine: TextSegment[] = [];
-    let currentWidth = 0;
-
-    for (const seg of segments) {
-        if (!seg.text) continue;
-        currentLine = [];
-        currentWidth = 0;
-        ctx.font = `${seg.fontStyle} ${seg.fontWeight} ${seg.fontSize}px ${seg.fontFamily}`;
-        // const words = seg.text.split(/\s+/);
-        const word = seg.text;
-        const wordText = word;
-        const metrics = ctx.measureText(wordText);
-        currentLine.push({ ...seg, text: wordText });
-        currentWidth += metrics.width;
-        // console.debug(`[word]`, { metrics, currentWidth, wordText });
-        lines.push(currentLine);
-    }
-
-    // Calculate dimensions
-    let height = 0;
-    let boxWidth = 0;
-    for (const line of lines) {
-        let lineHeight = 0;
-        let lineWidth = 0;
-        for (const seg of line) {
-            ctx.font = `${seg.fontStyle} ${seg.fontWeight} ${seg.fontSize}px ${seg.fontFamily}`;
-            const metrics = ctx.measureText(seg.text);
-            lineWidth += metrics.width * BULGARIAN_WIDTH_RATIO;
-            // Use modern metrics for accurate height (fall back to fontSize * 1.2 if not supported)
-            const segHeight = ('actualBoundingBoxAscent' in metrics && 'actualBoundingBoxDescent' in metrics)
-                ? metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent
-                : seg.fontSize * 1.2;
-            lineHeight = Math.max(lineHeight, segHeight);
-            // console.log(`--METRICS`, { ...metrics, segHeight, lineHeight });
-        }
-        height += lineHeight + 2; // Add line spacing (adjust as needed)
-        boxWidth = Math.max(boxWidth, lineWidth);
-    }
-
-    // Box width is the max line width, capped at maxWidth
-    const result = { width: Math.min(boxWidth, props.maxWidth), height };
-    // console.debug(`[headless] calculate result`, result);
-    return result;
+    return measureContentElements(html, ctx as unknown as CanvasRenderingContext2D, props.maxWidth);
 }
 
 export const write_svg = (deps: LoggerDep) => (
