@@ -1,10 +1,10 @@
 {
-  "id": "event-modeling-obsidian-plugin",
-  "name": "Event Modeling Obsidian Plugin",
+  "id": "event-modeling",
+  "name": "Event Modeling",
   "version": "0.0.1",
   "minAppVersion": "0.15.0",
-  "description": "Transform EVML code blocks into Event Modeling SVG diagrams.",
+  "description": "Work with text representations of Event Models. Render, explore and save in various formats.",
   "author": "Ladislav Gazo",
-  "authorUrl": "https://github.com/lgazo/event-modeling-dsl",
+  "authorUrl": "https://github.com/lgazo/event-modeling-tools/tree/main/packages/obsidian-plugin",
   "isDesktopOnly": false
 }

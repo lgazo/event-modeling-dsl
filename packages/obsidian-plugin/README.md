@@ -1,35 +1,39 @@
-# Event Modeling Layout Obsidian Plugin
+# Event Modeling Obsidian Plugin
 
-This plugin renders Event Modeling diagrams from `evml` code blocks inside Obsidian notes using the shared `event-modeling-layout` package.
+The project contains a [plugin for Obsidian](https://obsidian.md/) for viewing Event Models represented as text DSL.
 
-## Development
+You can edit the DSL in any text editor or use [VS Code Extension](https://github.com/lgazo/event-modeling-tools/tree/main/packages/vscode-extension).
 
-```sh
-pnpm -F event-modeling-obsidian-plugin install
-pnpm -F event-modeling-obsidian-plugin run dev
-```
+## Features
 
-The build command bundles necessary files into `out` folder. In development you get full test vault with the plugin configured.
+### Render
 
-## Usage
+Render Event Model diagram. Create a markdown file and put a code block following the [DSL Language](https://github.com/lgazo/event-modeling-tools/tree/main/packages/language).
 
-Insert a fenced code block tagged with `evml`:
+You can find example [vault here](https://github.com/lgazo/event-modeling-tools/tree/main/packages/obsidian-plugin/test/test-vault).
 
-````
-```evml
-eventmodeling
+![Render Event Model](./doc/render.png)
 
-...your model...
-```
-````
+### Explore
 
-The plugin converts it to an SVG diagram using the layout engine.
+Explore Event Model diagram, zoom in and out, pan. Right-click the diagram and Explore.
 
-## Production build
+![Explore Event Model](./doc/explorer.png)
 
-```
-pnpm -F event-modeling-obsidian-plugin run clean
-pnpm -F event-modeling-obsidian-plugin run build
-```
+### Save
 
-The `out` directory contains all the necessary plugin files. You can sideload it by copying it to any vault's `.obsidian/plugins/event-modeling-obsidian-plugin` directory.
+Save text DSL and SVG as well. Just right-click the diagram and select suitable format.
+
+![Save Event Model into various formats](./doc/context-menu.png)
+
+## Installing
+
+This plugin aspires to be available directly from within the app. The plugin will be found in the Community Plugins directory which can be accessed from the Settings pane under Third Party Plugins.
+
+## Manual installation
+
+1. Build the project following the instructions in [development doc](./DEVELOPMENT.md) 
+1. Extract the content of folder `out` to your vault's plugins folder: `<vault>/.obsidian/plugins/event-modeling-obsidian-plugin`  
+Note: On some machines the `.obsidian` folder may be hidden. On MacOS you should be able to press `Command+Shift+Dot` to show the folder in Finder.
+1. Reload Obsidian
+1. If prompted about Safe Mode, you can disable safe mode and enable the plugin.
