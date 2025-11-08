@@ -16,9 +16,9 @@ const __dirname = path.dirname(__filename);
 const outdir = isProd
   ? path.resolve(__dirname, 'out')
   : path.resolve(
-      __dirname,
-      'out/test-vault/.obsidian/plugins/event-modeling-obsidian-plugin/',
-    );
+    __dirname,
+    'out/test-vault/.obsidian/plugins/event-modeling-obsidian-plugin/',
+  );
 
 const staticAssets = [
   {
@@ -31,6 +31,21 @@ const staticAssets = [
   },
 ];
 
+const devAssets = [
+  {
+    source: path.join(__dirname, 'test/test-vault/hello.md'),
+    target: '../../../../test-vault/hello.md',
+  },
+  {
+    source: path.join(__dirname, 'test/test-vault/.obsidian/app.json'),
+    target: '../../../../test-vault/.obsidian/app.json',
+  },
+  {
+    source: path.join(__dirname, 'test/test-vault/.obsidian/community-plugins.json'),
+    target: '../../../../test-vault/.obsidian/community-plugins.json',
+  },
+];
+
 async function copyStaticAssets(destinationRoot) {
   await Promise.all(
     staticAssets.map(async ({ source, target }) => {
@@ -39,6 +54,16 @@ async function copyStaticAssets(destinationRoot) {
       await fs.copyFile(source, destination);
     }),
   );
+  if (!isProd) {
+
+    await Promise.all(
+      devAssets.map(async ({ source, target }) => {
+        const destination = path.join(destinationRoot, target);
+        await fs.mkdir(path.dirname(destination), { recursive: true });
+        await fs.copyFile(source, destination);
+      }),
+    );
+  }
 }
 
 function watchStaticAssets(destinationRoot) {
@@ -112,7 +137,7 @@ async function run() {
 
     const shutdown = () => {
       stopAssetWatchers();
-      ctx.dispose().catch(() => {});
+      ctx.dispose().catch(() => { });
       process.exit(0);
     };
 
