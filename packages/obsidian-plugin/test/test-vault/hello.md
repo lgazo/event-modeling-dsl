@@ -1,4 +1,6 @@
-# hi
+# cart
+
+This is what I would like to implement.
 
 ```evml
 eventmodeling
@@ -6,8 +8,8 @@ eventmodeling
 tf 01 scn CartScreen
 tf 02 cmd AddItem [[AddItem01]]
 tf 03 evt ItemAdded [[ItemAdded]]
-tf 04 cmd AddItem [[AddItem02]]
-tf 05 evt ItemAdded [[ItemAdded]]
+tf 06 rmo AllItems { count: 1 }
+tf 07 scn CartScreen
 
 data AddItem01 {
   description: 'john'

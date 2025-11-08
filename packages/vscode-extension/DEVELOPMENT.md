@@ -3,7 +3,11 @@
 
 ## Packaging
 
-Just run `pnpm run vscode:package`.
+Just run
+
+```sh
+pnpm run -F event-modeling-vscode-extension vscode:package
+```
 
 ## Publishing
 
