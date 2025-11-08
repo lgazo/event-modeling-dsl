@@ -145,6 +145,9 @@ importers:
       event-modeling-language:
         specifier: workspace:*
         version: link:../language
+      event-modeling-layout:
+        specifier: workspace:*
+        version: link:../layout
       langium:
         specifier: 4.1.0
         version: 4.1.0

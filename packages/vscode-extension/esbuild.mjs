@@ -4,8 +4,6 @@ import * as esbuild from 'esbuild';
 const watch = process.argv.includes('--watch');
 const minify = process.argv.includes('--minify');
 
-const success = watch ? 'Watch build succeeded' : 'Build succeeded';
-
 function getTime() {
     const date = new Date();
     return `[${`${padZeroes(date.getHours())}:${padZeroes(date.getMinutes())}:${padZeroes(date.getSeconds())}`}] `;
@@ -15,40 +13,68 @@ function padZeroes(i) {
     return i.toString().padStart(2, '0');
 }
 
-const plugins = [{
-    name: 'watch-plugin',
-    setup(build) {
-        build.onEnd(result => {
-            if (result.errors.length === 0) {
-                console.log(getTime() + success);
-            }
-        });
+const builds = [
+    {
+        label: 'Extension',
+        options: {
+            entryPoints: ['src/extension/main.ts', 'src/language/main.ts'],
+            outdir: 'out',
+            bundle: true,
+            target: 'ES2017',
+            format: 'cjs',
+            outExtension: {
+                '.js': '.cjs'
+            },
+            loader: { '.ts': 'ts' },
+            external: ['vscode'],
+            platform: 'node',
+            sourcemap: !minify,
+            minify
+        }
     },
-}];
+    {
+        label: 'Webview',
+        options: {
+            entryPoints: ['src/extension/webview/livePreview.ts'],
+            outdir: 'out/webview',
+            bundle: true,
+            target: 'ES2020',
+            format: 'iife',
+            loader: { '.ts': 'ts' },
+            platform: 'browser',
+            sourcemap: !minify,
+            minify
+        }
+    }
+];
 
-const ctx = await esbuild.context({
-    // Entry points for the vscode extension and the language server
-    entryPoints: ['src/extension/main.ts', 'src/language/main.ts'],
-    outdir: 'out',
-    bundle: true,
-    target: "ES2017",
-    // VSCode's extension host is still using cjs, so we need to transform the code
-    format: 'cjs',
-    // To prevent confusing node, we explicitly use the `.cjs` extension
-    outExtension: {
-        '.js': '.cjs'
-    },
-    loader: { '.ts': 'ts' },
-    external: ['vscode'],
-    platform: 'node',
-    sourcemap: !minify,
-    minify,
-    plugins
-});
+const contexts = [];
+
+for (const build of builds) {
+    const plugins = [{
+        name: `watch-plugin-${build.label.toLowerCase()}`,
+        setup(pluginBuild) {
+            pluginBuild.onEnd(output => {
+                if (output.errors.length === 0) {
+                    const suffix = watch ? '(watch) ' : '';
+                    console.log(`${getTime()}${build.label} build ${suffix}succeeded`);
+                }
+            });
+        },
+    }];
+
+    const context = await esbuild.context({
+        ...build.options,
+        plugins
+    });
+    contexts.push({ label: build.label, context });
+}
 
 if (watch) {
-    await ctx.watch();
+    await Promise.all(contexts.map(item => item.context.watch()));
 } else {
-    await ctx.rebuild();
-    ctx.dispose();
+    for (const { context } of contexts) {
+        await context.rebuild();
+        context.dispose();
+    }
 }

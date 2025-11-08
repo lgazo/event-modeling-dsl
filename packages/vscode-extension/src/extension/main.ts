@@ -2,12 +2,19 @@ import type { LanguageClientOptions, ServerOptions } from 'vscode-languageclient
 import type * as vscode from 'vscode';
 import * as path from 'node:path';
 import { LanguageClient, TransportKind } from 'vscode-languageclient/node.js';
+import { EventModelLivePreviewManager } from './livePreviewManager.js';
 
 let client: LanguageClient;
+let livePreviewManager: EventModelLivePreviewManager | undefined;
 
 // This function is called when the extension is activated.
 export async function activate(context: vscode.ExtensionContext): Promise<void> {
     client = await startLanguageClient(context);
+    livePreviewManager = new EventModelLivePreviewManager(context);
+    context.subscriptions.push(
+        livePreviewManager,
+        livePreviewManager.registerCommand()
+    );
 }
 
 // This function is called when the extension is deactivated.
