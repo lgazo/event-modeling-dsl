@@ -23,7 +23,7 @@
     },
     "dependencies": {
         "event-modeling-language": "workspace:*",
-        "event-modeling-layout": "workspace:*",
+        "event-modeling-layout-headless": "workspace:*",
         "chalk": "~5.3.0",
         "commander": "~11.1.0",
         "langium": "4.1.0"

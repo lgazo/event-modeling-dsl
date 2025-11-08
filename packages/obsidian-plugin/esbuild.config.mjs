@@ -7,7 +7,7 @@ const isProd = args.includes('--prod');
 const options = {
   entryPoints: ['src/main.ts'],
   bundle: true,
-  outfile: 'main.js',
+  // outfile: 'main.js',
   // platform: 'browser',
   platform: 'node',
   target: 'es2020',
@@ -15,7 +15,12 @@ const options = {
   sourcemap: isProd ? false : 'inline',
   minify: isProd,
   external: ['obsidian'],
-  treeShaking: true
+  treeShaking: true,
+  loader: {
+    ".node": "file",
+  },
+  outdir: isProd ? "out" : "out/test-vault/.obsidian/plugins/event-modeling-obsidian-plugin/",  // Output to plugin dir for dev; use a build dir for prod
+  // outdir: "out"
 };
 
 async function run() {

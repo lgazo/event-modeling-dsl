@@ -8,13 +8,16 @@
             "path": "./packages/language/tsconfig.test.json"
         },
         {
+            "path": "./packages/layout/tsconfig.json"
+        },
+        {
+            "path": "./packages/layout-headless/tsconfig.json"
+        },
+        {
             "path": "./packages/cli/tsconfig.json"
         },
         {
             "path": "./packages/vscode-extension/tsconfig.json"
-        },
-        {
-            "path": "./packages/layout/tsconfig.json"
         },
         {
             "path": "./packages/obsidian-plugin/tsconfig.json"

@@ -1,8 +1,8 @@
 import { Plugin, type MarkdownPostProcessorContext } from 'obsidian';
 import { createEventModelingServices, type EventModel } from 'event-modeling-language';
 import { EmptyFileSystem, URI } from 'langium';
-import { create_dom_renderer, type DomRenderer } from 'event-modeling-layout';
-import type { Logger } from 'event-modeling-layout';
+import { create_dom_renderer } from 'event-modeling-layout';
+import type { Logger, DomRenderer } from 'event-modeling-layout';
 
 export default class EventModelingLayoutPlugin extends Plugin {
   private readonly services = createEventModelingServices(EmptyFileSystem);
