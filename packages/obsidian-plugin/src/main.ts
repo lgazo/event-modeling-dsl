@@ -1,8 +1,9 @@
-import { Plugin, type MarkdownPostProcessorContext } from 'obsidian';
+import { Menu, Plugin, type MarkdownPostProcessorContext, type WorkspaceLeaf } from 'obsidian';
 import { createEventModelingServices, type EventModel } from 'event-modeling-language';
 import { EmptyFileSystem, URI } from 'langium';
 import { create_dom_renderer } from 'event-modeling-layout';
 import type { Logger, DomRenderer } from 'event-modeling-layout';
+import { EventModelExplorerView, VIEW_TYPE_EVENT_MODEL_EXPLORER } from './event-model-explorer-view.js';
 
 export default class EventModelingLayoutPlugin extends Plugin {
   private readonly services = createEventModelingServices(EmptyFileSystem);
@@ -21,12 +22,19 @@ export default class EventModelingLayoutPlugin extends Plugin {
   }
 
   override async onload(): Promise<void> {
+    this.registerView(VIEW_TYPE_EVENT_MODEL_EXPLORER, (leaf: WorkspaceLeaf) => new EventModelExplorerView(leaf, this.renderer));
+
     this.registerMarkdownCodeBlockProcessor('evml', async (source: string, el: HTMLElement, context: MarkdownPostProcessorContext) => {
       await this.renderDiagram(source, el, context);
     });
   }
 
   override onunload(): void {
+    const leaves = this.app.workspace.getLeavesOfType(VIEW_TYPE_EVENT_MODEL_EXPLORER);
+    for (const leaf of leaves) {
+      leaf.detach();
+    }
+
     this.services.shared.workspace.LangiumDocuments.deleteDocuments(URI.parse('memory://evml/'));
   }
 
@@ -37,6 +45,7 @@ export default class EventModelingLayoutPlugin extends Plugin {
     try {
       const model = await this.parseEvml(source);
       this.renderer.render(model, container);
+      this.attachContextMenu(container, model);
     } catch (error: unknown) {
       console.error('[evml] Failed to render EVML block', error);
       container.createEl('pre', {
@@ -70,6 +79,40 @@ export default class EventModelingLayoutPlugin extends Plugin {
       return model;
     } finally {
       documents.deleteDocument(uri);
+    }
+  }
+
+  private attachContextMenu(container: HTMLElement, model: EventModel): void {
+    container.addEventListener('contextmenu', event => {
+      event.preventDefault();
+
+      const menu = new Menu();
+      menu.addItem(item =>
+        item
+          .setTitle('Explore event model')
+          .setIcon('maximize')
+          .onClick(() => {
+            void this.openExplorer(model);
+          })
+      );
+      menu.showAtMouseEvent(event);
+    });
+  }
+
+  private async openExplorer(model: EventModel): Promise<void> {
+    const workspace = this.app.workspace;
+    let leaf = workspace.getLeavesOfType(VIEW_TYPE_EVENT_MODEL_EXPLORER)[0];
+
+    if (!leaf) {
+      leaf = workspace.getLeaf(true);
+      await leaf.setViewState({ type: VIEW_TYPE_EVENT_MODEL_EXPLORER, active: true });
+    } else {
+      workspace.setActiveLeaf(leaf, { focus: true });
+    }
+
+    const view = leaf.view;
+    if (view instanceof EventModelExplorerView) {
+      view.setModel(model);
     }
   }
 }

@@ -13,3 +13,63 @@
 .evml-diagram pre {
   margin: 0;
 }
+
+.evml-explorer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  height: 100%;
+}
+
+.evml-explorer-toolbar {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.evml-explorer-button {
+  border: var(--input-border-width) solid var(--background-modifier-border);
+  border-radius: var(--radius-s);
+  background-color: var(--background-modifier-form-field);
+  color: var(--text-normal);
+  padding: 0.35rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 2rem;
+  width: 2rem;
+}
+
+.evml-explorer-button:hover {
+  background-color: var(--background-modifier-hover);
+}
+
+.evml-explorer-viewport {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-s);
+  background-color: var(--background-secondary);
+  cursor: grab;
+}
+
+.evml-explorer-viewport--panning {
+  cursor: grabbing;
+}
+
+.evml-explorer-diagram {
+  position: absolute;
+  top: 0;
+  left: 0;
+  will-change: transform;
+}
+
+.evml-explorer-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-muted);
+  font-style: italic;
+}
