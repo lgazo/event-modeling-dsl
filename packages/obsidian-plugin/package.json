@@ -4,13 +4,14 @@
   "private": true,
   "type": "module",
   "description": "Obsidian plugin that renders Event Modeling diagrams from EVML code blocks.",
+  "license": "Apache-2.0",
   "main": "out/main.js",
   "scripts": {
     "dev": "node esbuild.config.mjs",
-		"build1": "tsc -b -noEmit -v && node esbuild.config.mjs production",
-		"build": "node esbuild.config.mjs production",
+    "build": "tsc -b -noEmit -v && node esbuild.config.mjs production",
     "clean": "shx rm -rf out && shx rm tsconfig.tsbuildinfo",
-    "test": "echo 'No tests yet'"
+    "test": "echo 'No tests yet'",
+    "version": "node version-bump.mjs && git add manifest.json versions.json"
   },
   "dependencies": {
     "d3": "^7.9.0",
@@ -21,6 +22,7 @@
   },
   "devDependencies": {
     "@types/d3": "^7.4.3",
+    "builtin-modules": "^5.0.0",
     "esbuild": "^0.24.0",
     "shx": "~0.4.0"
   }
