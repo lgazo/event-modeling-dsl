@@ -16,9 +16,9 @@ const options = {
   minify: isProd,
   external: ['obsidian'],
   treeShaking: true,
-  loader: {
-    ".node": "file",
-  },
+  // loader: {
+  //   ".node": "file",
+  // },
   outdir: isProd ? "out" : "out/test-vault/.obsidian/plugins/event-modeling-obsidian-plugin/",  // Output to plugin dir for dev; use a build dir for prod
   // outdir: "out"
 };
