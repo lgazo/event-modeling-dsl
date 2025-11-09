@@ -2,6 +2,7 @@
 
 The project combines multiple tools helping you with Event Modeling, such as Domain Specific Language (DSL).
 
+[![Discord channel](https://shields.io/static/v1?logo=discord&message=eventmodeling&label=chat&color=5865F2&logoColor=white)](https://discord.com/channels/1139074016448098375/1139074016448098378)
 [![Build project](https://github.com/lgazo/event-modeling-tools/actions/workflows/event-modeling-ci.yml/badge.svg)](https://github.com/lgazo/event-modeling-tools/actions/workflows/event-modeling-ci.yml)
 
 > [!NOTE]
@@ -17,12 +18,15 @@ Event Modeling model file is usually defined in a text with prefered `.evml` fil
 
 There is VS Code compatible extension published.
 
-For [VS Code](https://code.visualstudio.com/) use its [official Marketplace](https://marketplace.visualstudio.com/items?itemName=LadislavGazo.event-modeling-dsl). Hit Ctrl+P and type:
+> [!NOTE]
+> There is a deprecated extension available under `event-modeling-dsl` identifier. Use the one with `event-modeling-vscode-extension`.
+
+For [VS Code](https://code.visualstudio.com/) use its [official Marketplace](https://marketplace.visualstudio.com/items?itemName=LadislavGazo.event-modeling-vscode-extension). Hit Ctrl+P and type:
 ```
-ext install LadislavGazo.event-modeling-dsl
+ext install LadislavGazo.event-modeling-vscode-extension
 ```
 
-For [VS Codium](https://vscodium.com/) use [Open VSX Registry](https://open-vsx.org/extension/LadislavGazo/event-modeling-dsl).
+For [VS Codium](https://vscodium.com/) use [Open VSX Registry](https://open-vsx.org/extension/LadislavGazo/event-modeling-vscode-extension).
 
 ## Command Line Interface
 

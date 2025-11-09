@@ -4,6 +4,10 @@ The project contains a [plugin for Obsidian](https://obsidian.md/) for viewing E
 
 You can edit the DSL in any text editor or use [VS Code Extension](https://github.com/lgazo/event-modeling-tools/tree/main/packages/vscode-extension).
 
+Enter Event Modeling [Discord channel](https://discord.com/channels/1139074016448098375/1139074016448098378) to ask more questions.
+
+[![Discord channel](https://shields.io/static/v1?logo=discord&style=for-the-badge&message=eventmodeling&label=chat&color=5865F2&logoColor=white)](https://discord.com/channels/1139074016448098375/1139074016448098378)
+
 ## Features
 
 ### Render

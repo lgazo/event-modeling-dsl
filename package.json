@@ -29,9 +29,9 @@
 
     "displayName": "Event Modeling tool belt",
     "publisher": "LadislavGazo",
-    "homepage": "https://github.com/lgazo/event-modeling-dsl",
+    "homepage": "https://github.com/lgazo/event-modeling-tools",
     "bugs": {
-        "url": "https://github.com/lgazo/event-modeling-dsl/issues"
+        "url": "https://github.com/lgazo/event-modeling-tools/issues"
     },
     "keywords": [
         "dsl",
@@ -45,6 +45,6 @@
     "license": "Apache-2.0",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/lgazo/event-modeling-dsl.git"
+        "url": "git+https://github.com/lgazo/event-modeling-tools.git"
     }
 }
