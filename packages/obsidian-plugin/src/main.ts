@@ -1,7 +1,7 @@
 import { Menu, Notice, Plugin, type MarkdownPostProcessorContext, type WorkspaceLeaf } from 'obsidian';
 import { createEventModelingServices, type EventModel } from 'event-modeling-language';
 import { EmptyFileSystem, URI } from 'langium';
-import { create_dom_renderer } from 'event-modeling-layout';
+import { create_dom_renderer, parseEvml, serializeSvg } from 'event-modeling-layout';
 import type { Logger, DomRenderer } from 'event-modeling-layout';
 import { EventModelExplorerView, VIEW_TYPE_EVENT_MODEL_EXPLORER } from './event-model-explorer-view.js';
 import { createHash } from 'crypto';
@@ -12,7 +12,6 @@ export default class EventModelingLayoutPlugin extends Plugin {
     debug: (message: string, ctx?: unknown) => console.debug(`[evml] ${message}`, ctx)
   };
   private readonly renderer: DomRenderer;
-  private nextDocumentId = 0;
 
   constructor(app: any, manifest: any) {
     super(app, manifest);
@@ -45,7 +44,7 @@ export default class EventModelingLayoutPlugin extends Plugin {
     const hash = this.computeContentHash(source);
 
     try {
-      const model = await this.parseEvml(source);
+      const model = await parseEvml(source);
       const svg = this.renderer.render(model, container);
       this.attachContextMenu(container, model, source, svg, hash);
     } catch (error: unknown) {
@@ -53,34 +52,6 @@ export default class EventModelingLayoutPlugin extends Plugin {
       container.createEl('pre', {
         text: `Event Modeling render error: ${error instanceof Error ? error.message : String(error)}`
       });
-    }
-  }
-
-  private async parseEvml(source: string): Promise<EventModel> {
-    const uri = URI.parse(`memory://evml/${this.nextDocumentId++}.evml`);
-    const documents = this.services.shared.workspace.LangiumDocuments;
-    const documentBuilder = this.services.shared.workspace.DocumentBuilder;
-    const document = this.services.shared.workspace.LangiumDocumentFactory.fromString(source, uri);
-    documents.addDocument(document);
-
-    try {
-      await documentBuilder.build([document], { validation: true });
-
-      const diagnostics = document.diagnostics ?? [];
-      const errors = diagnostics.filter((diag: { severity?: number }) => diag.severity === 1);
-      if (errors.length > 0) {
-        const message = errors.map((error: { message: string }) => error.message).join('\n');
-        throw new Error(message);
-      }
-
-      const model = document.parseResult?.value as EventModel | undefined;
-      if (!model) {
-        throw new Error('Invalid EVML document: empty parse result.');
-      }
-
-      return model;
-    } finally {
-      documents.deleteDocument(uri);
     }
   }
 
@@ -135,7 +106,7 @@ export default class EventModelingLayoutPlugin extends Plugin {
   private async saveSvg(svg: SVGSVGElement, hash: string): Promise<void> {
     const fileName = `event-model-${hash}.svg`;
     try {
-      const serialized = this.serializeSvg(svg);
+      const serialized = serializeSvg(svg);
       await this.app.vault.adapter.write(fileName, serialized);
       new Notice(`Saved ${fileName}`);
     } catch (error: unknown) {
@@ -144,14 +115,6 @@ export default class EventModelingLayoutPlugin extends Plugin {
     }
   }
 
-  private serializeSvg(svg: SVGSVGElement): string {
-    const serializer = new XMLSerializer();
-    const markup = serializer.serializeToString(svg);
-    if (markup.startsWith('<?xml')) {
-      return markup;
-    }
-    return `<?xml version="1.0" encoding="UTF-8"?>\n${markup}`;
-  }
 
   private async openExplorer(model: EventModel): Promise<void> {
     const workspace = this.app.workspace;

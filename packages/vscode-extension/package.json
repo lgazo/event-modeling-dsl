@@ -29,11 +29,11 @@
         }],
         "commands": [{
             "command": "event-modeling.livePreview",
-            "title": "Event Model: Live Preview",
+            "title": "Live Preview",
             "category": "Event Model"
         }, {
             "command": "event-modeling.saveAsSvg",
-            "title": "Event Model: Save as SVG",
+            "title": "Save as SVG",
             "category": "Event Model"
         }]
     },

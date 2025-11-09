@@ -1,6 +1,5 @@
-import { create_dom_renderer, type DomRenderer } from 'event-modeling-layout';
-import { createEventModelingServices, type EventModel } from 'event-modeling-language';
-import { EmptyFileSystem, URI } from 'langium';
+import { create_dom_renderer, type DomRenderer, parseEvml } from 'event-modeling-layout';
+import { formatError } from '../utils.js';
 
 declare function acquireVsCodeApi<State = unknown>(): {
     postMessage(message: unknown): void;
@@ -17,7 +16,6 @@ interface RenderMessage {
 
 const vscode = acquireVsCodeApi();
 
-const services = createEventModelingServices(EmptyFileSystem);
 const renderer: DomRenderer = create_dom_renderer({
     document,
     log: {
@@ -31,7 +29,6 @@ const placeholder = document.getElementById('placeholder') as HTMLDivElement;
 const errorContainer = document.getElementById('error') as HTMLDivElement;
 const diagramContainer = document.getElementById('diagram') as HTMLDivElement;
 
-let nextDocumentId = 0;
 let activeVersion = -1;
 let renderToken = 0;
 
@@ -86,35 +83,6 @@ async function render(payload: RenderMessage): Promise<void> {
     }
 }
 
-async function parseEvml(source: string): Promise<EventModel> {
-    const uri = URI.parse(`memory://evml/${nextDocumentId++}.evml`);
-    const documents = services.shared.workspace.LangiumDocuments;
-    const documentBuilder = services.shared.workspace.DocumentBuilder;
-    const document = services.shared.workspace.LangiumDocumentFactory.fromString(source, uri);
-
-    documents.addDocument(document);
-
-    try {
-        await documentBuilder.build([document], { validation: true });
-
-        const diagnostics = document.diagnostics ?? [];
-        const errors = diagnostics.filter(diagnostic => diagnostic.severity === 1);
-        if (errors.length > 0) {
-            const message = errors.map(error => error.message).join('\n');
-            throw new Error(message);
-        }
-
-        const model = document.parseResult?.value as EventModel | undefined;
-        if (!model) {
-            throw new Error('Invalid EVML document: empty parse result.');
-        }
-
-        return model;
-    } finally {
-        documents.deleteDocument(uri);
-    }
-}
-
 function showPlaceholder(message: string): void {
     placeholder.textContent = message;
     placeholder.hidden = false;
@@ -138,11 +106,4 @@ function clearError(): void {
 
 function clearDiagram(): void {
     diagramContainer.replaceChildren();
-}
-
-function formatError(error: unknown): string {
-    if (error instanceof Error) {
-        return error.message;
-    }
-    return typeof error === 'string' ? error : 'Unknown error while parsing Event Model.';
 }

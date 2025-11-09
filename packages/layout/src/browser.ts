@@ -1,10 +1,11 @@
 import { select } from 'd3';
-import type { EventModel } from 'event-modeling-language';
+import { createEventModelingServices, type EventModel } from 'event-modeling-language';
 import { create_db, ContentElementStyles } from './db.js';
 import { draw_diagram, type D3Diagram } from './renderer.js';
 import type { DiagramProps, Context } from './types.js';
 import type { LoggerDep } from './types_services.js';
 import { measureContentElements } from './text_measure.js';
+import { EmptyFileSystem, URI } from 'langium';
 
 export const SVG_STYLE_BLOCK = `:where(.evml-svg){font-family:${ContentElementStyles.span.fontFamily};font-size:${ContentElementStyles.span.fontSize}px;fill:#333;}:where(.evml-svg) .edge-animation-slow{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 50s linear infinite;stroke-linecap:round;}:where(.evml-svg) .edge-animation-fast{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 20s linear infinite;stroke-linecap:round;}:where(.evml-svg) .error-icon{fill:#552222;}:where(.evml-svg) .error-text{fill:#552222;stroke:#552222;}:where(.evml-svg) .edge-thickness-normal{stroke-width:1px;}:where(.evml-svg) .edge-thickness-thick{stroke-width:3.5px;}:where(.evml-svg) .edge-pattern-solid{stroke-dasharray:0;}:where(.evml-svg) .edge-thickness-invisible{stroke-width:0;fill:none;}:where(.evml-svg) .edge-pattern-dashed{stroke-dasharray:3;}:where(.evml-svg) .edge-pattern-dotted{stroke-dasharray:2;}:where(.evml-svg) .marker{fill:#333333;stroke:#333333;}:where(.evml-svg) .marker.cross{stroke:#333333;}:where(.evml-svg) svg{font-family:${ContentElementStyles.span.fontFamily};font-size:${ContentElementStyles.span.fontSize}px;}:where(.evml-svg) p{margin:0;}:where(.evml-svg){--mermaid-font-family:${ContentElementStyles.span.fontFamily};}`;
 
@@ -85,4 +86,44 @@ function computeDiagramSize(diagramProps: DiagramProps, state: Context): { width
     : diagramProps.swimlaneMinHeight + 2 * diagramProps.swimlanePadding;
 
   return { width, height };
+}
+
+let nextDocumentId = 0;
+export async function parseEvml(source: string): Promise<EventModel> {
+  const services = createEventModelingServices(EmptyFileSystem);
+  const uri = URI.parse(`memory://evml/${nextDocumentId++}.evml`);
+  const documents = services.shared.workspace.LangiumDocuments;
+  const documentBuilder = services.shared.workspace.DocumentBuilder;
+  const document = services.shared.workspace.LangiumDocumentFactory.fromString(source, uri);
+  documents.addDocument(document);
+
+  try {
+    await documentBuilder.build([document], { validation: true });
+
+    const diagnostics = document.diagnostics ?? [];
+    const errors = diagnostics.filter((diag: { severity?: number }) => diag.severity === 1);
+    if (errors.length > 0) {
+      const message = errors.map((error: { message: string }) => error.message).join('\n');
+      throw new Error(message);
+    }
+
+    const model = document.parseResult?.value as EventModel | undefined;
+    if (!model) {
+      throw new Error('Invalid EVML document: empty parse result.');
+    }
+
+    return model;
+  } finally {
+    documents.deleteDocument(uri);
+  }
+}
+
+
+export function serializeSvg(svg: SVGSVGElement): string {
+  const serializer = new XMLSerializer();
+  const markup = serializer.serializeToString(svg);
+  if (markup.startsWith('<?xml')) {
+    return markup;
+  }
+  return `<?xml version="1.0" encoding="UTF-8"?>\n${markup}`;
 }
