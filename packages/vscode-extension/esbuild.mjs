@@ -35,7 +35,7 @@ const builds = [
     {
         label: 'Webview',
         options: {
-            entryPoints: ['src/extension/webview/livePreview.ts'],
+            entryPoints: ['src/extension/webview/livePreview.ts', 'src/extension/webview/saveAsSvg.ts'],
             outdir: 'out/webview',
             bundle: true,
             target: 'ES2020',

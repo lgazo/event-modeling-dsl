@@ -31,11 +31,16 @@
             "command": "event-modeling.livePreview",
             "title": "Event Model: Live Preview",
             "category": "Event Model"
+        }, {
+            "command": "event-modeling.saveAsSvg",
+            "title": "Event Model: Save as SVG",
+            "category": "Event Model"
         }]
     },
     "activationEvents": [
         "onLanguage:event-modeling",
-        "onCommand:event-modeling.livePreview"
+        "onCommand:event-modeling.livePreview",
+        "onCommand:event-modeling.saveAsSvg"
     ],
     "main": "./out/extension/main.cjs",
     "scripts": {

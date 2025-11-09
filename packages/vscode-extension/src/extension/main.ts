@@ -3,17 +3,22 @@ import type * as vscode from 'vscode';
 import * as path from 'node:path';
 import { LanguageClient, TransportKind } from 'vscode-languageclient/node.js';
 import { EventModelLivePreviewManager } from './livePreviewManager.js';
+import { EventModelSaveSvgCommand } from './saveSvgCommand.js';
 
 let client: LanguageClient;
 let livePreviewManager: EventModelLivePreviewManager | undefined;
+let svgExporter: EventModelSaveSvgCommand | undefined;
 
 // This function is called when the extension is activated.
 export async function activate(context: vscode.ExtensionContext): Promise<void> {
     client = await startLanguageClient(context);
     livePreviewManager = new EventModelLivePreviewManager(context);
+    svgExporter = new EventModelSaveSvgCommand(context);
     context.subscriptions.push(
         livePreviewManager,
-        livePreviewManager.registerCommand()
+        livePreviewManager.registerCommand(),
+        svgExporter,
+        svgExporter.registerCommand()
     );
 }
 
